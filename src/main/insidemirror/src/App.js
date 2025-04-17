@@ -18,12 +18,22 @@ function App() {
   const [date, setDate] = useState("");
   const [currentName, setCurrentName] = useState("Unknown");
   const [remainingTime, setRemainingTime] = useState(5);
-  const name = "yunyeong";
+  // const name = "yunyeong";
   const speak = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ko-KR";
     window.speechSynthesis.speak(utterance);
   };
+
+  useEffect(() => {
+    // 이미 저장된 client_id가 없다면
+    if (!localStorage.getItem("client_id")) {
+      const timestamp = Date.now(); // 현재 시간 (밀리초)
+      const newClientId = `client_${timestamp}`;
+      localStorage.setItem("client_id", newClientId); // 저장
+      console.log("Generated new client ID:", newClientId);
+    }
+  }, []);
 
   useEffect(() => {
     if (currentName !== "Unknown") {
@@ -92,12 +102,14 @@ function App() {
 
       const formData = new FormData();
       formData.append("file", blob, "frame.jpg");
+      formData.append("client_id", localStorage.getItem("client_id"));
 
       try {
         const response = await fetch("https://number5.store/recognize", {
           method: "POST",
           body: formData,
         });
+
 
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
