@@ -94,7 +94,7 @@ function App() {
       formData.append("file", blob, "frame.jpg");
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/recognize", {
+        const response = await fetch("https://number5.store/recognize", {
           method: "POST",
           body: formData,
         });
@@ -119,11 +119,11 @@ function App() {
         <MouseFollower/>
         <div className="bottom-section">
           <div className="left-section">
-            <h2>Hello, {name} !</h2>
+            <h2>Hello, {currentName} !</h2>
             <Hello />
             <NewsTicker />
             <BusInfo/>
-           < Schedule/>
+            <Schedule name={currentName} />
           </div>
 
           <div className="middle-section">

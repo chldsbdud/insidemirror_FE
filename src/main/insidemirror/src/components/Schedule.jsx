@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "../styles/Schedule.css";
 
-function Schedule() {
+function Schedule({ name }) {  // ✅ name을 props로 받음
     const [todayStr, setTodayStr] = useState("");
     const [todaySchedules, setTodaySchedules] = useState([]);
     const [tomorrowSchedules, setTomorrowSchedules] = useState([]);
     const [newTitle, setNewTitle] = useState("");
-    const [newDate, setNewDate] = useState("2025-04-18"); // 오늘 날짜 고정
+    const [newDate, setNewDate] = useState("2025-04-18");
 
-    const name = "yunyeong";
-    const userId = 3;
     const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
-        const todayDate = new Date("2025-04-18"); // 오늘로 고정
+        if (!name || name === "게스트" || name === "Unknown") return; // ✅ 이름이 없는 경우 요청 안 함
+
+        const todayDate = new Date("2025-04-18");
         const tomorrowDate = new Date(todayDate);
         tomorrowDate.setDate(todayDate.getDate() + 1);
 
@@ -39,50 +39,16 @@ function Schedule() {
 
         fetchForDate(todayDate).then(setTodaySchedules);
         fetchForDate(tomorrowDate).then(setTomorrowSchedules);
-    }, []);
-
-    const handleAddSchedule = () => {
-        const postUrl = `${API_BASE}/api/schedules`;
-
-        fetch(postUrl, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId,
-                date: newDate,
-                title: newTitle,
-            }),
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error("일정 추가 실패");
-                return res.json();
-            })
-            .then(() => {
-                setNewTitle("");
-                window.location.reload(); // 간단하게 전체 새로고침으로 재조회
-            })
-            .catch((err) => {
-                console.error("일정 추가 중 오류:", err);
-            });
-    };
+    }, [name]); // ✅ 이름이 바뀔 때마다 다시 요청
 
     return (
         <div className="schedule-container">
             <div className="schedule-header">{todayStr}</div>
 
             <div className="schedule-add">
-                {/*<input*/}
-                {/*    type="date"*/}
-                {/*    value={newDate}*/}
-                {/*    onChange={(e) => setNewDate(e.target.value)}*/}
-                {/*/>*/}
-                {/*<input*/}
-                {/*    type="text"*/}
-                {/*    placeholder="일정 제목 입력"*/}
-                {/*    value={newTitle}*/}
-                {/*    onChange={(e) => setNewTitle(e.target.value)}*/}
-                {/*/>*/}
-                {/*<button onClick={handleAddSchedule}>추가</button>*/}
+                {/* <input type="date" ... /> */}
+                {/* <input type="text" ... /> */}
+                {/* <button onClick={handleAddSchedule}>추가</button> */}
             </div>
 
             <div className="schedule-list-row">
@@ -100,7 +66,7 @@ function Schedule() {
                 </div>
 
                 <div className="schedule-column preview-column">
-                    <div className="schedule-section-header" style={{color:"#adabab"}}>내일 미리보기</div>
+                    <div className="schedule-section-header" style={{ color: "#adabab" }}>내일 미리보기</div>
                     {tomorrowSchedules.length > 0 ? (
                         tomorrowSchedules.map((task, i) => (
                             <div className="schedule-item preview" key={`tomorrow-${i}`}>
@@ -112,9 +78,6 @@ function Schedule() {
                     )}
                 </div>
             </div>
-
-
-
         </div>
     );
 }
