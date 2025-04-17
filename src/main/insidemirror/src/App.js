@@ -131,7 +131,7 @@ function App() {
         <MouseFollower/>
         <div className="bottom-section">
           <div className="left-section">
-            <h2>Hello, {currentName} !</h2>
+            <h2 className="userName">Hello, {currentName} !</h2>
             <Hello />
             <NewsTicker />
             <BusInfo/>

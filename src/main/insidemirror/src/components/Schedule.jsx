@@ -11,7 +11,13 @@ function Schedule({ name }) {  // ✅ name을 props로 받음
     const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
-        if (!name || name === "게스트" || name === "Unknown") return; // ✅ 이름이 없는 경우 요청 안 함
+        if (!name || name === "게스트" || name === "Unknown") {
+            //  이름이 없거나 유효하지 않을 경우 일정 초기화
+            setTodayStr("");
+            setTodaySchedules([]);
+            setTomorrowSchedules([]);
+            return;
+        } //  이름이 없는 경우 요청 안 함
 
         const todayDate = new Date("2025-04-18");
         const tomorrowDate = new Date(todayDate);

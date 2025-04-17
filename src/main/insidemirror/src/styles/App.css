@@ -143,6 +143,10 @@ body {
     align-items: flex-start; /* 왼쪽 정렬 */
 }
 
+.userName{
+    font-size: 2.5em;
+}
+
 /* 우측 영역 */
 .right-section {
     width: 25vw;
