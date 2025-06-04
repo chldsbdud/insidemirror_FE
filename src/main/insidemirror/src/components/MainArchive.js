@@ -97,103 +97,104 @@ function MainArchive() {
   };
 
   return (
-    <div className="main-archive">
-      {/* 좌측: 이미지 */}
-      <div className="left-panel">
-        <div className="archive-box">
-          <img src={Archive} alt="archive" />
-          <h2>내 아카이브</h2>
-          <button className="create-btn" onClick={() => setShowModal(true)}>
-            + 아카이브 생성
-          </button>
-        </div>
-
-        <div className="list-box">
-          <img src={Photo} alt="photo" />
-          <h3>이미지 앨범</h3>
-        </div>
-
-        <div className="archive-grid">
-          {archives
-            .filter((item) => item.type === "image")
-            .map((item, idx) => (
-              <ArchiveCard key={idx} {...item} onClick={() => setSelectedItem(item)} />
-            ))}
-        </div>
+    <>
+      <div className="archive-box">
+        <img src={Archive} alt="archive" />
+        <h2>내 아카이브</h2>
+        <button className="create-btn" onClick={() => setShowModal(true)}>
+          + 아카이브 생성
+        </button>
       </div>
+      <div className="main-archive">
+        {/* 좌측: 이미지 */}
+        <div className="left-panel">
+          <div className="list-box">
+            <img src={Photo} alt="photo" />
+            <h3>이미지 앨범</h3>
+          </div>
 
-      {/* 우측: 파일 표시 */}
-      <div className="right-panel">
-        <div className="list-box">
-          <img src={Folder} alt="folder" />
-          <h3>파일 미리보기</h3>
+          <div className="archive-grid">
+            {archives
+              .filter((item) => item.type === "image")
+              .map((item, idx) => (
+                <ArchiveCard key={idx} {...item} onClick={() => setSelectedItem(item)} />
+              ))}
+          </div>
         </div>
 
-        {selectedItem && selectedItem.type === "file" ? (
-          <div
-            className="file-preview-pane"
-            style={{
-              maxHeight: "75vh",
-              overflowY: "auto",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              padding: "1rem",
-            }}
-          >
-            <embed src={selectedItem.fileURL} type="application/pdf" width="600px" height="1200px" />
+        {/* 우측: 파일 표시 */}
+        <div className="right-panel">
+          <div className="list-box">
+            <img src={Folder} alt="folder" />
+            <h3>파일 미리보기</h3>
           </div>
-        ) : (
-          <p style={{ color: "#aaa" }}>선택된 파일이 없습니다.</p>
+
+          {selectedItem && selectedItem.type === "file" ? (
+            <div
+              className="file-preview-pane"
+              style={{
+                maxHeight: "75vh",
+                overflowY: "auto",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "1rem",
+              }}
+            >
+              <embed src={selectedItem.fileURL} type="application/pdf" width="600px" height="1200px" />
+            </div>
+          ) : (
+            <p style={{ color: "#aaa" }}>선택된 파일이 없습니다.</p>
+          )}
+        </div>
+        {showModal && (
+          <div className={`bottom-sheet ${isClosing ? "slide-down" : "slide-up"}`}>
+            {!newArchive.type ? (
+              <button onClick={() => document.getElementById("uploadInput").click()}>📁 사진 또는 파일 선택</button>
+            ) : (
+              <>
+                {newArchive.preview && <img src={newArchive.preview} alt="preview" style={{ width: "100%", maxHeight: "150px", objectFit: "cover" }} />}
+                <input type="text" placeholder="제목 입력" value={newArchive.title} onChange={(e) => setNewArchive({ ...newArchive, title: e.target.value })} />
+                <input
+                  type="text"
+                  placeholder="태그 입력 (쉼표로 구분)"
+                  onChange={(e) =>
+                    setNewArchive({
+                      ...newArchive,
+                      tags: e.target.value.split(",").map((tag) => tag.trim()),
+                    })
+                  }
+                />
+                <button onClick={handleCreate}>생성</button>
+              </>
+            )}
+
+            <input
+              id="uploadInput"
+              type="file"
+              accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.xlsx"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const extension = file.name.split(".").pop().toLowerCase();
+                const imageTypes = ["jpg", "jpeg", "png"];
+                if (imageTypes.includes(extension)) {
+                  const preview = URL.createObjectURL(file);
+                  setNewArchive({ ...newArchive, type: "image", file, preview });
+                } else {
+                  const preview = "/img/pdf_icon.png";
+                  setNewArchive({ ...newArchive, type: "file", file, preview });
+                }
+              }}
+            />
+
+            <button className="cancel-btn" onClick={handleClose}>
+              취소
+            </button>
+          </div>
         )}
       </div>
-      {showModal && (
-        <div className={`bottom-sheet ${isClosing ? "slide-down" : "slide-up"}`}>
-          {!newArchive.type ? (
-            <button onClick={() => document.getElementById("uploadInput").click()}>📁 사진 또는 파일 선택</button>
-          ) : (
-            <>
-              {newArchive.preview && <img src={newArchive.preview} alt="preview" style={{ width: "100%", maxHeight: "150px", objectFit: "cover" }} />}
-              <input type="text" placeholder="제목 입력" value={newArchive.title} onChange={(e) => setNewArchive({ ...newArchive, title: e.target.value })} />
-              <input
-                type="text"
-                placeholder="태그 입력 (쉼표로 구분)"
-                onChange={(e) =>
-                  setNewArchive({
-                    ...newArchive,
-                    tags: e.target.value.split(",").map((tag) => tag.trim()),
-                  })
-                }
-              />
-              <button onClick={handleCreate}>생성</button>
-            </>
-          )}
-
-          <input
-            id="uploadInput"
-            type="file"
-            accept=".png,.jpg,.jpeg,.pdf,.doc,.docx,.xlsx"
-            style={{ display: "none" }}
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (!file) return;
-              const extension = file.name.split(".").pop().toLowerCase();
-              const imageTypes = ["jpg", "jpeg", "png"];
-              if (imageTypes.includes(extension)) {
-                const preview = URL.createObjectURL(file);
-                setNewArchive({ ...newArchive, type: "image", file, preview });
-              } else {
-                const preview = "/img/pdf_icon.png";
-                setNewArchive({ ...newArchive, type: "file", file, preview });
-              }
-            }}
-          />
-
-          <button className="cancel-btn" onClick={handleClose}>
-            취소
-          </button>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 

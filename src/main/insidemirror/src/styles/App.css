@@ -24,37 +24,6 @@ body {
   box-shadow: 0 0 2vh rgba(0, 0, 0, 0.5); /* 약간의 그림자 효과 */
 }
 
-/* 중앙 시간, 날씨, 인사말 */
-.time-weather {
-  text-align: left !important;
-  margin-top: 2vh;
-}
-
-.time {
-  font-size: 5vh !important;
-  font-weight: bold;
-}
-
-.date {
-  margin: 1vh 0;
-  font-size: 2vh;
-}
-
-.weather {
-  margin: 1vh 0;
-  font-size: 2vh;
-}
-
-.greeting {
-  margin-top: 2vh;
-  font-size: 2vh;
-}
-
-.mic-icon {
-  font-size: 2vh;
-  margin-top: 1vh;
-}
-
 /* 하단 섹션 */
 .bottom-section {
   display: flex;
@@ -93,18 +62,21 @@ body {
 
 /* 중앙 시간, 날씨, 인사말 */
 .time-weather {
-  text-align: center;
+  text-align: left;
   margin-top: 2vh;
+  padding: 1.5vh;
 }
 
 .time {
-  font-size: 8vh;
+  font-size: 7vh;
   font-weight: bold;
+  margin-left: 10px;
 }
 
 .date {
   margin: 1vh 0;
   font-size: 2vh;
+  margin-left: 10px;
 }
 
 .weather {
@@ -143,10 +115,12 @@ body {
 
 .userName {
   font-size: 2em !important;
+  padding: 1.5vh;
 }
 
 /* 우측 영역 */
 .right-section {
+  margin-top: 13vh;
   width: 25vw;
   display: flex;
   flex-direction: column;

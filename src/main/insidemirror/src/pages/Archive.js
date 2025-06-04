@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Archive.css";
 import cameraBlack from "../img/cameraBlack.png";
+import axios from "axios";
 
 function Archive() {
   const navigate = useNavigate();
@@ -11,6 +12,39 @@ function Archive() {
   const [ddayDate, setDdayDate] = useState(null);
   const [notionLink, setNotionLink] = useState("");
   const [currentIndex, setCurrentIndex] = useState(2); // 중앙 인덱스
+
+  //이미지 조회 api
+  useEffect(() => {
+    const userName = localStorage.getItem("userName") || "Unknown";
+    const today = new Date().toISOString().slice(0, 10);
+
+    // 카메라에서 찍은 이미지 로드
+    const savedImage = localStorage.getItem("capturedImage");
+    if (savedImage) {
+      setUploadedImages((prev) => [...prev, savedImage]);
+      setCenterIndex(0);
+      localStorage.removeItem("capturedImage");
+    }
+
+    // 서버에서 사용자 이미지 불러오기
+    const fetchImages = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/images`, {
+          params: { name: userName, date: today },
+        });
+
+        const imageUrls = response.data.map((img) => `${process.env.REACT_APP_API_BASE_URL}${img.imagePath}`);
+        setUploadedImages((prev) => [...imageUrls, ...prev]);
+        setCenterIndex(0);
+      } catch (error) {
+        console.error("이미지 불러오기 실패:", error);
+      }
+    };
+
+    if (userName !== "Unknown") {
+      fetchImages();
+    }
+  }, []);
 
   // D-Day 계산
   const ddayCount = ddayDate ? Math.ceil((new Date(ddayDate) - new Date()) / (1000 * 60 * 60 * 24)) : null;
@@ -50,16 +84,11 @@ function Archive() {
     setUploadedPdfs(files);
   };
 
-  const handleDdayChange = (e) => setDdayDate(e.target.value);
-  const handleTitleChange = (e) => setDdayTitle(e.target.value);
-  const handleNotionLinkChange = (e) => setNotionLink(e.target.value);
-
   return (
     <div className="archive-container">
       <h2>My Archive</h2>
       <section className="archive-section">
-        <h3>📷 사진 업로드</h3>
-        <input type="file" accept="image/*" multiple onChange={handleImageUpload} />
+        <h3>사진 업로드</h3>
 
         {uploadedImages.length > 0 && (
           <div className="carousel-wrapper">
@@ -93,21 +122,6 @@ function Archive() {
             <li key={idx}>{pdf.name}</li>
           ))}
         </ul>
-      </section>
-
-      <section className="archive-section">
-        <h3>📅 D-Day 설정</h3>
-        <input type="date" onChange={handleDdayChange} />
-        <input type="text" placeholder="D-Day 제목" onChange={handleTitleChange} />
-        <p>
-          {ddayTitle}까지 D-{ddayCount}
-        </p>
-      </section>
-
-      <section className="archive-section">
-        <h3>🗂️ 노션 페이지</h3>
-        <input type="text" placeholder="노션 공유 링크 입력" onChange={handleNotionLinkChange} />
-        {notionLink && <iframe src={notionLink} title="Notion" className="notion-embed" frameBorder="0"></iframe>}
       </section>
     </div>
   );

@@ -12,38 +12,38 @@ import MouseFollower from "./MouseFollower";
 import GazeRingZone from "./GazeTracker/GazeRingZone";
 import GazeDot from "./GazeTracker/GazeDot";
 import GazeTracker from "./GazeTracker/GazeTracker";
+import Chatbot from "./Chatbot";
+// const ChatbotComponent = () => {
+//   const [latestResponse, setLatestResponse] = useState("");
 
-const ChatbotComponent = () => {
-  const [latestResponse, setLatestResponse] = useState("");
+//   const fetchLatestMessage = async () => {
+//     const client_id = "default";
 
-  const fetchLatestMessage = async () => {
-    const client_id = "default";
+//     try {
+//       const response = await fetch(`https://number5.store/chatbot/response/${client_id}`);
+//       if (!response.ok) throw new Error("네트워크 응답 실패");
 
-    try {
-      const response = await fetch(`https://number5.store/chatbot/response/${client_id}`);
-      if (!response.ok) throw new Error("네트워크 응답 실패");
+//       const data = await response.json();
+//       console.log("최신 응답:", data.text);
 
-      const data = await response.json();
-      console.log("최신 응답:", data.text);
+//       setLatestResponse(data.text);
+//     } catch (error) {
+//       console.error("에러 발생:", error);
+//     }
+//   };
 
-      setLatestResponse(data.text);
-    } catch (error) {
-      console.error("에러 발생:", error);
-    }
-  };
+//   useEffect(() => {
+//     const interval = setInterval(fetchLatestMessage, 1000);
+//     return () => clearInterval(interval);
+//   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(fetchLatestMessage, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="chatbot-container">
-      <div className="chatbot-header">🤖 AI 응답</div>
-      <div className="chatbot-bubble">{latestResponse}</div>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <h3 className="chatbot">AI 응답</h3>
+//       <p>{latestResponse}</p>
+//     </div>
+//   );
+// };
 
 //메인 함수 시작
 function Main() {
@@ -177,7 +177,7 @@ function Main() {
       <GazeTracker onGaze={setGaze} />
       <div className="bottom-section">
         <div className="left-section">
-          <h2 className="userName">Hello, {currentName} !</h2>
+          {/* <h2 className="userName">Hello, {currentName} !</h2> */}
           <div className="time-weather">
             <div className="time">{time}</div>
             <div className="date">{date}</div>
@@ -190,7 +190,7 @@ function Main() {
           {/* <FaceAnimation /> */}
           <video ref={videoRef} autoPlay muted style={{ width: "0%" }} />
           <canvas ref={canvasRef} style={{ display: "none" }} />
-          <ChatbotComponent />
+          <Chatbot />
         </div>
 
         <div className="right-section">
