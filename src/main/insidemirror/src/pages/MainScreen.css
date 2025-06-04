@@ -1,0 +1,66 @@
+.main-screen {
+  max-width: 400px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(to bottom, #000000, #2f2f2f);
+  color: white;
+  font-family: 'Pretendard', sans-serif;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.greeting {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  margin-top: 10rem;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.circle-button {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-align: center;
+}
+
+.circle-button img {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 0.8rem;
+}
+
+.circle-button p {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-button img {
+  width: 40px;
+  height: auto;
+  margin-bottom: 1rem;
+}

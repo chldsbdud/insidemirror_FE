@@ -1,51 +1,50 @@
 .bus-info-container {
-    width: 25vw;
-    padding: 1.5vh;
-    border-radius: 2vh;
-    background-color: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(4px);
-    border: 0.1vh solid rgba(255, 255, 255, 0.2);
-    color: white;
-    box-sizing: border-box;
-    margin-top: 2vh;
+  width: 25vw;
+  padding: 1.5vh;
+  border-radius: 2vh;
+  background-color: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(4px);
+  border: 0.1vh solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-sizing: border-box;
 }
 
 .bus-stop-title {
-    font-size: 1.6vh;
-    font-weight: bold;
-    margin-bottom: 1vh;
-    border-bottom: 0.1vh solid rgba(255, 255, 255, 0.3);
-    padding-bottom: 0.5vh;
+  font-size: 1.6vh;
+  font-weight: bold;
+  margin-bottom: 1vh;
+  border-bottom: 0.1vh solid rgba(255, 255, 255, 0.3);
+  padding-bottom: 0.5vh;
 }
 
 .bus-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1vh;
 }
 
 .bus-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1.3vh;
-    padding: 0.8vh 1vh;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 1vh;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.3vh;
+  padding: 0.8vh 1vh;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1vh;
 }
 
 .bus-number {
-    font-weight: bold;
-    font-size: 1.4vh;
+  font-weight: bold;
+  font-size: 1.4vh;
 }
 
 .bus-destination {
-    flex-grow: 1;
-    text-align: center;
-    font-size: 1.2vh;
-    color: #ccc;
+  flex-grow: 1;
+  text-align: center;
+  font-size: 1.2vh;
+  color: #ccc;
 }
 
 .bus-arrival {
-    font-size: 1.2vh;
+  font-size: 1.2vh;
 }

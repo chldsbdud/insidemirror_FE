@@ -1,0 +1,344 @@
+.schedule-container {
+  width: 100% !important;
+  max-width: 400px;
+  margin: 2rem auto;
+  border-radius: 10px;
+  padding: 1.5rem;
+  font-family: "Pretendard", sans-serif;
+}
+
+.schedule-header-mobile {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: left;
+  color: #ffffff;
+}
+
+.schedule-add {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.schedule-add input[type="date"],
+.schedule-add input[type="text"] {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  flex: 1;
+}
+
+.schedule-add button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.schedule-add button:hover {
+  background-color: #005fcc;
+}
+
+.schedule-list-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.schedule-column-mobile {
+  flex: 1;
+  min-width: 250px;
+  background-color: transparent;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  color: white;
+  border: 1px dotted white;
+}
+
+.preview-column-mobile {
+  background-color: #f0f4ff;
+}
+
+.schedule-section-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.schedule-item {
+  background-color: transparent;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  display: flex;
+  text-align: center;
+}
+
+.schedule-item.preview {
+  background-color: #eef3ff;
+}
+
+.schedule-item button {
+  background: none;
+  border: 1px solid red;
+  border-radius: 10%;
+  color: #ff3b30;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-left: 8px;
+  padding: 2px;
+}
+
+.schedule-item button:hover {
+  text-decoration: underline;
+}
+
+.back-button {
+  align-items: right;
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  img {
+    width: 30px;
+    height: auto;
+    margin-right: auto;
+  }
+}
+
+.userName-mobile {
+  font-size: 30px;
+  font-weight: 600;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.back-button-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+  img {
+    width: 30px;
+    height: auto;
+    margin-right: auto;
+  }
+}
+
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+  max-width: 400px;
+}
+
+.react-calendar {
+  width: 300px;
+  border: none;
+  font-family: "Pretendard", sans-serif;
+  background-color: transparent;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  height: 18px;
+  margin-bottom: 14px;
+  color: white;
+  margin-top: 21px;
+  font-size: 12px;
+}
+
+.react-calendar__navigation button {
+  background: none;
+  color: white;
+}
+
+.react-calendar__month-view__weekdays {
+  height: 15px;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-size: 13px;
+  color: white;
+  font-weight: bold;
+}
+
+.react-calendar__tile {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  text-align: center;
+  font: inherit;
+  font-size: 13px;
+  color: white;
+}
+
+.react-calendar__tile--active {
+  color: #ffffff;
+  background-color: #4196d6;
+  border-radius: 50%;
+}
+
+.react-calendar__tile:hover {
+  background-color: inherit;
+  cursor: default; /* 마우스 커서도 기본으로 변경 */
+}
+
+.react-calendar__tile--active:enabled:hover,
+.react-calendar__tile--active:enabled:focus {
+  background-color: #4196d6;
+  border-radius: 50%;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.modal h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.modal input[type="date"],
+.modal input[type="text"] {
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-buttons button:first-child {
+  background-color: #007aff;
+  color: white;
+}
+
+.modal-buttons button:first-child:hover {
+  background-color: #005fcc;
+}
+
+.modal-buttons button:last-child {
+  background-color: transparent;
+  border: 1px solid #aaa;
+  color: #aaa;
+}
+
+.modal-buttons button:last-child:hover {
+  background-color: #333;
+  color: white;
+}
+
+.schedule-add-bottom {
+  margin-top: 2rem;
+  border-top: 1px dashed white;
+  text-align: center;
+}
+
+.schedule-add-bottom > button {
+  margin-top: 2rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.schedule-add-bottom > button:hover {
+  background-color: #4196d6;
+}
+
+.add-form-wrapper {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.4s ease;
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.add-form-wrapper.open {
+  max-height: 100px; /* 충분한 값 */
+  margin-top: 2rem;
+  opacity: 1;
+}
+
+.add-form-wrapper input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.add-form-wrapper button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.add-form-wrapper button:hover {
+  background-color: #4196d6;
+}

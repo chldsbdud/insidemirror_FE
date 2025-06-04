@@ -1,53 +1,44 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "../styles/BusInfo.css";
 
-const dummyBusData = [
-    {
-        busNumber: "7016",
-        destination: "서울역",
-        arrivalInMin: 3
-    },
-    {
-        busNumber: "152",
-        destination: "노원역",
-        arrivalInMin: 7
-    },
-    {
-        busNumber: "1111",
-        destination: "도봉산역",
-        arrivalInMin: 12
-    }
-];
-
 function BusInfo() {
-    const [busList, setBusList] = useState([]);
+  const [busList, setBusList] = useState([]);
+  const [stationName, setStationName] = useState("");
 
-    useEffect(() => {
-        // 추후 fetch로 교체 가능
-        const loadBusData = () => {
-            setBusList(dummyBusData);
-        };
+  const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
-        loadBusData();
+  useEffect(() => {
+    const fetchBusData = async () => {
+      try {
+        const response = await axios.get(`${API_BASE}/bus_arrival`);
+        const data = response.data;
 
-        const interval = setInterval(loadBusData, 15000); // 15초마다 갱신
-        return () => clearInterval(interval);
-    }, []);
+        setStationName(data.station);
+        setBusList(data.buses);
+      } catch (error) {
+        console.error("버스 정보 불러오기 실패:", error);
+      }
+    };
 
-    return (
-        <div className="bus-info-container">
-            <div className="bus-stop-title">도봉초등학교 정류장</div>
-            <div className="bus-list">
-                {busList.map((bus, idx) => (
-                    <div className="bus-item" key={idx}>
-                        <div className="bus-number">{bus.busNumber}</div>
-                        <div className="bus-destination">{bus.destination}행</div>
-                        <div className="bus-arrival">{bus.arrivalInMin}분 후 도착</div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+    fetchBusData();
+    const interval = setInterval(fetchBusData, 15000); // 15초마다 갱신
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="bus-info-container">
+      <div className="bus-stop-title">{stationName || "정류장 정보 없음"}</div>
+      <div className="bus-list">
+        {busList.map((bus, idx) => (
+          <div className="bus-item" key={idx}>
+            <div className="bus-number">{bus.route}</div>
+            <div className="bus-arrival">{bus.arrival}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default BusInfo; 
+export default BusInfo;

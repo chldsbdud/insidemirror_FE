@@ -1,0 +1,21 @@
+.archive-card {
+  width: 100%;
+  cursor: pointer;
+  img {
+    border-radius: 12px;
+  }
+}
+
+.archive-card:hover {
+  transform: translateY(-4px);
+}
+
+.card-thumbnail {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 16px;
+}
