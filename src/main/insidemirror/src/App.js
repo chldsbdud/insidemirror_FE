@@ -12,6 +12,10 @@ import CameraPage from "./components/CameraPage";
 import BottomNav from "./components/BottomNav";
 import Archive from "./pages/Archive";
 import MainArchive from "./components/MainArchive";
+//수정중_ main에서 app으로 옮기는중
+import GazeTracker from "./components/GazeTracker/GazeTracker";
+import GazeDot from "./components/GazeTracker/GazeDot";
+import GazeRingZone from "./components/GazeTracker/GazeRingZone";
 import "./styles/App.css";
 
 function App() {
@@ -43,6 +47,62 @@ function App() {
   return (
     <Router>
       <div className="app">
+        <GazeTracker onGaze={setGaze} />
+        <GazeDot x={gaze.x} y={gaze.y} />
+        <GazeRingZone
+          gaze={gaze}
+          zones={{
+            weather: {
+              x: 909.46,
+              y: 133.85,
+              width: 318.66,
+              height: 213.66,
+              path: "/weather",
+            },
+            archive: {
+              x: 461,
+              y: 633.33,
+              width: 70,
+              height: 73.33,
+              path: "/archive",
+            },
+            home: {
+              x: 605,
+              y: 633.33,
+              width: 70,
+              height: 73.33,
+              path: "/home",
+            },
+            camera: {
+              x: 749,
+              y: 633.33,
+              width: 70,
+              height: 73.33,
+              path: "/camera",
+            },
+            musicPrev: {
+              x: 73.44792175292969,
+              y: 215.96875,
+              width: 90.5,
+              height: 50,
+              path: "/music/prev",
+            },
+            musicPlayPause: {
+              x: 176.73959350585938,
+              y: 215.96875,
+              width: 90.5,
+              height: 50,
+              path: "/music/play-pause",
+            },
+            musicNext: {
+              x: 280.03125,
+              y: 215.96875,
+              width: 90.5,
+              height: 50,
+              path: "/music/next",
+            },
+          }}
+        />
         <BottomNav />
         <div className="page-container">
           <AnimatedRoutes
@@ -80,13 +140,7 @@ function AnimatedRoutes({ authenticated, setAuthenticated, userName, setUserName
               path="/mobile"
               element={
                 !authenticated ? (
-                  <LockScreen
-                    onAuthenticated={() => setAuthenticated(true)}
-                    onUserDetected={(name) => {
-                      setUserName(name);
-                      localStorage.setItem("userName", name); // 이름을 로컬스토리지에 저장
-                    }}
-                  />
+                  <LockScreen onAuthenticated={() => setAuthenticated(true)} onUserDetected={(name) => setUserName(name)} />
                 ) : (
                   <MainScreen userName={userName} onLogout={() => setAuthenticated(false)} />
                 )

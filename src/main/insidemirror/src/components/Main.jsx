@@ -8,9 +8,7 @@ import FaceAnimation from "./FaceAnimation";
 import WeatherWidget from "./WeatherWidget";
 import MusicPlayer from "./MusicPlayer";
 import MouseFollower from "./MouseFollower";
-import GazeRingZone from "./GazeTracker/GazeRingZone";
-import GazeDot from "./GazeTracker/GazeDot";
-import GazeTracker from "./GazeTracker/GazeTracker";
+
 import Chatbot from "./Chatbot";
 
 //메인 함수 시작
@@ -26,17 +24,12 @@ function Main() {
   const [date, setDate] = useState("");
   const [currentName, setCurrentName] = useState("Unknown");
   const [remainingTime, setRemainingTime] = useState(5);
-  const [gaze, setGaze] = useState({ x: 0, y: 0 });
 
   const speak = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ko-KR";
     window.speechSynthesis.speak(utterance);
   };
-
-  useEffect(() => {
-    console.log("Gaze 좌표:", gaze);
-  }, [gaze]);
 
   useEffect(() => {
     if (!localStorage.getItem("client_id")) {
@@ -141,8 +134,7 @@ function Main() {
   return (
     <div className="app">
       <MouseFollower />
-      <GazeDot x={gaze.x} y={gaze.y} />
-      <GazeTracker onGaze={setGaze} />
+
       <div className="bottom-section">
         <div className="left-section">
           {/* <h2 className="userName">Hello, {currentName} !</h2> */}
@@ -166,7 +158,6 @@ function Main() {
           <NewsTicker />
           <BusInfo />
 
-          <GazeRingZone gaze={gaze} x={50} y={50} width={1000} height={1000} onGazeComplete={() => {}} />
           <div id={`youtube-player-PL4fGSI1pDJn5S09aId3dUGp40ygUqmPGc`} style={{ display: "none" }} />
         </div>
       </div>

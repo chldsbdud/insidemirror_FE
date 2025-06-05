@@ -1,63 +1,137 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../styles/GazeRingZone.css";
+import { useNavigate } from "react-router-dom";
 
-function GazeRingZone({ gaze, x, y, width, height, onGazeComplete }) {
+
+function GazeRingZone({ gaze, zones }) {
   const [progress, setProgress] = useState(0);
-  const [timer, setTimer] = useState(null);
-  const [visible, setVisible] = useState(false);
-
-  const inside = gaze.x >= x && gaze.x <= x + width && gaze.y >= y && gaze.y <= y + height;
+  const [currentZone, setCurrentZone] = useState(null);
+  const progressRef = useRef(0);
+  const zoneRef = useRef(null);
+  const timerRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (inside) {
-      setVisible(true);
-      if (!timer) {
-        const t = setInterval(() => {
-          setProgress((p) => {
-            if (p >= 100) {
-              clearInterval(t);
-              setTimer(null);
-              onGazeComplete();
-              return 0;
-            }
-            return p + 1.67;
-          });
-        }, 50);
-        setTimer(t);
-      }
-    } else {
-      clearInterval(timer);
-      setTimer(null);
-      setProgress(0);
-      setVisible(false);
-    }
+  console.log("📍 gaze 입력값:", gaze);
 
-    return () => clearInterval(timer);
-  }, [inside]);
+  let activeKey = null;
+
+  for (const [key, { x, y, width, height }] of Object.entries(zones)) {
+    const inside =
+      gaze.x >= x &&
+      gaze.x <= x + width &&
+      gaze.y >= y &&
+      gaze.y <= y + height;
+
+    if (inside) {
+      activeKey = key;
+      console.log(`🎯 gaze가 ${key} zone 안에 있음`);
+      break;
+    }
+  }
+  
+  const zoneChanged = activeKey !== zoneRef.current;
+
+  // 🔁 zone이 바뀌었으면 초기화
+  if (zoneChanged) {
+    console.log("🔁 zone 변경 감지 → 초기화 수행");
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+    timerRef.current = null;
+    progressRef.current = 0;
+    setProgress(0);
+    zoneRef.current = activeKey;
+    setCurrentZone(activeKey); // 이거 놓치지 말 것
+  }
+
+  // ⏱ 타이머 조건 확인 및 시작
+  if (activeKey && timerRef.current === null) {
+    console.log("⏱ 타이머 시작");
+
+    timerRef.current = setInterval(() => {
+      progressRef.current += 1.67;
+      setProgress(progressRef.current);
+      console.log("🟢 진행률:", progressRef.current);
+
+      if (progressRef.current >= 100) {
+        console.log("✅ 조건 충족 → 이동 실행", zones[activeKey].path);
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        progressRef.current = 0;
+        setProgress(0);
+
+        if (zones[activeKey].path) {
+          navigate(zones[activeKey].path);
+        } else {
+          console.warn("⚠️ path 없음 → 이동 생략");
+        }
+      }
+    }, 50);
+  }
+
+  // gaze가 zone 밖일 경우
+  if (!activeKey && zoneRef.current !== null) {
+    console.log("🚫 zone 벗어남 → 초기화");
+    clearInterval(timerRef.current);
+    timerRef.current = null;
+    progressRef.current = 0;
+    setProgress(0);
+    setCurrentZone(null);
+    zoneRef.current = null;
+  }
+
+  return () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+}, [gaze, zones]);
+
+  if (!currentZone) {
+    console.log("📭 currentZone 없음 → 게이지 비표시");
+    return null;
+  }
+
+  const { x, y, width, height } = zones[currentZone];
+  const gaugeX = x ;
+  const gaugeY = y ;
+
+  console.log(`📍 gauge 렌더링 좌표: (${gaugeX}, ${gaugeY})`);
 
   return (
-    <>
-      {visible && (
-        <div
-          className="gaze-zone"
-          style={{
-            position: "fixed", // 화면 절대 좌표 기준
-            left: x,
-            top: y,
-            width,
-            height,
-            pointerEvents: "none", // 클릭 방지
-            zIndex: 1000,
-          }}
-        >
-          <svg className="gauge-ring" width="60" height="60">
-            <circle cx="30" cy="30" r="25" className="gauge-bg" />
-            <circle cx="30" cy="30" r="25" className="gauge-progress" strokeDasharray={157} strokeDashoffset={157 - (progress / 100) * 157} />
-          </svg>
-        </div>
-      )}
-    </>
-  );
+  <div
+    className="gaze-zone"
+    style={{
+      left: gaugeX,
+      top: gaugeY,
+      width: 60,
+      height: 60,
+      position: "fixed", // fixed 유지
+      pointerEvents: "none",
+      zIndex: 1000
+    }}
+  >
+  <svg className="gauge-ring" width="60" height="60">
+  <defs>
+    <linearGradient id="gradient-purple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stopColor="#a960ee" />
+      <stop offset="100%" stopColor="#ff6ec4" />
+    </linearGradient>
+  </defs>
+  <circle cx="30" cy="30" r="25" className="gauge-bg" />
+  <circle
+    cx="30"ㄴ
+    cy="30"
+    r="25"
+    className="gauge-progress"
+    strokeDasharray={157}
+    strokeDashoffset={157 - (progress / 100) * 157}
+  />
+</svg>
+  </div>
+);
 }
 
 export default GazeRingZone;
