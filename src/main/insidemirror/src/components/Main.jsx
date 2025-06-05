@@ -8,7 +8,6 @@ import FaceAnimation from "./FaceAnimation";
 import WeatherWidget from "./WeatherWidget";
 import MusicPlayer from "./MusicPlayer";
 import MouseFollower from "./MouseFollower";
-
 import Chatbot from "./Chatbot";
 
 //메인 함수 시작
