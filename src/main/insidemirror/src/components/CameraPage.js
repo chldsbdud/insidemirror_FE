@@ -7,6 +7,7 @@ import { Camera } from "@mediapipe/camera_utils";
 import HeartFilter from "../img/heartFilter.png";
 import GlassesFilter from "../img/glassMando.png";
 import CameraIcon from "../img/camera2.png";
+import * as hands from "@mediapipe/hands";
 
 function CameraPage() {
   const videoRef = useRef(null);
@@ -17,6 +18,10 @@ function CameraPage() {
 
   const [savedImages, setSavedImages] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("heart");
+  const [lastCapture, setLastCapture] = useState(0);
+  const [captureTimeout, setCaptureTimeout] = useState(null);
+  const [lastGestureTime, setLastGestureTime] = useState(0);
+  const [countdown, setCountdown] = useState(null);
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
@@ -80,9 +85,11 @@ function CameraPage() {
     if (videoRef.current) {
       const cam = new Camera(videoRef.current, {
         onFrame: async () => {
-          await faceMeshInstance.send({ image: videoRef.current });
+          const frame = videoRef.current;
+          await faceMeshInstance.send({ image: frame });
+          await handDetector.send({ image: frame }); // ✅ 손도 동시에 분석
         },
-        width: 620,
+        width: 640,
         height: 480,
       });
       cam.start();
@@ -161,6 +168,72 @@ function CameraPage() {
     return new Blob([u8arr], { type: mime });
   };
 
+  // 손 모듈 초기화
+  const handDetector = new hands.Hands({
+    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`,
+  });
+  handDetector.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.7,
+    minTrackingConfidence: 0.7,
+  });
+
+  // 손 인식 결과 처리
+  handDetector.onResults((results) => {
+    if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+      const landmarks = results.multiHandLandmarks[0];
+
+      const thumb = landmarks[4];
+      const pinky = landmarks[20];
+
+      const dx = thumb.x - pinky.x;
+      const dy = thumb.y - pinky.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      const now = Date.now();
+
+      if (distance > 0.3 && now - lastGestureTime > 5000) {
+        if (!captureTimeout) {
+          console.log("손바닥 감지됨 - 카운트다운 시작");
+
+          let count = 3;
+          setCountdown(count);
+
+          const intervalId = setInterval(() => {
+            count -= 1;
+            if (count === 0) {
+              clearInterval(intervalId);
+              setCountdown(null);
+              handleSaveImage();
+              setLastGestureTime(Date.now());
+            } else {
+              setCountdown(count);
+            }
+          }, 1000);
+
+          setCaptureTimeout(intervalId); // 재사용 방지
+        }
+      }
+    }
+  });
+
+  useEffect(() => {
+    return () => {
+      if (captureTimeout) clearInterval(captureTimeout);
+    };
+  }, [captureTimeout]);
+
+  const shouldCapture = () => {
+    const now = Date.now();
+    if (now - lastCapture > 2000) {
+      // 최소 2초 간격
+      setLastCapture(now);
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <div className="camera">
@@ -173,8 +246,13 @@ function CameraPage() {
           <p>PhotoBooth</p>
         </div>
 
-        <video ref={videoRef} style={{ display: "none" }} />
-        <canvas ref={canvasRef} className="face-canvas" />
+        <div className="camera-container">
+          <video ref={videoRef} style={{ display: "none" }} />
+          <canvas ref={canvasRef} className="face-canvas" />
+
+          {countdown !== null && <div className="countdown-overlay">{countdown}</div>}
+        </div>
+
         {/* 카메라 촬영 버튼 */}
         <div className="camera-button">
           <button className="camera-box" onClick={handleSaveImage} title="사진 저장" ref={captureButtonRef}>
