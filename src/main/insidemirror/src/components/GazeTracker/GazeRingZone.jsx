@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/GazeRingZone.css";
-
 import { useNavigate } from "react-router-dom";
 
 function GazeRingZone({ gaze, zones }) {
