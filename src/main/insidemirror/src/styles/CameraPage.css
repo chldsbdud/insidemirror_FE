@@ -1,5 +1,5 @@
 .camera {
-  width: 620px;
+  width: 100%;
   box-sizing: border-box;
   display: block;
   border-radius: 8px;
@@ -12,11 +12,11 @@
   display: flex;
   border-radius: 15px 15px 0 0;
   background-color: #292929;
-  justify-content: flex-start;
   align-items: center;
   width: 100%;
   min-width: 620px;
   max-width: 620px;
+  margin: 0 auto;
 
   .iconBox {
     display: flex;
@@ -45,14 +45,20 @@
 }
 
 .camera-button {
-  text-align: center;
+  display: flex;
+  justify-content: center;
   background-color: #292929;
   border: none;
+  background-color: #292929;
+  align-items: center;
   width: 100%;
-  margin: 0;
+  min-width: 620px;
+  max-width: 620px;
+  margin: 0 auto;
 }
 
 .camera-box {
+  max-width: 100%;
   border: none; /*기존 버튼 스타일 삭제*/
   background-color: #292929;
   img {
@@ -88,4 +94,13 @@
     border-radius: 8px;
     cursor: pointer;
   }
+}
+
+.face-canvas {
+  width: 80%; /* 부모 기준 너비 */
+  aspect-ratio: 4 / 3; /* 4:3 비율 유지 */
+  height: auto;
+  max-width: 620px; /* 최대 크기 제한 */
+  display: block;
+  margin: 0 auto; /* 가운데 정렬 */
 }

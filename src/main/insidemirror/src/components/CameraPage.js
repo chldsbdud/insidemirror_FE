@@ -175,17 +175,15 @@ function CameraPage() {
 
         <video ref={videoRef} style={{ display: "none" }} />
         <canvas ref={canvasRef} className="face-canvas" />
-
-        {/* 필터 이미지들 */}
-        <img ref={heartRef} src={HeartFilter} alt="Heart Filter" style={{ display: "none" }} />
-        <img ref={glassesRef} src={GlassesFilter} alt="Glasses Filter" style={{ display: "none" }} />
-
         {/* 카메라 촬영 버튼 */}
         <div className="camera-button">
           <button className="camera-box" onClick={handleSaveImage} title="사진 저장" ref={captureButtonRef}>
             <img src={CameraIcon} alt="카메라 아이콘" />
           </button>
         </div>
+        {/* 필터 이미지들 */}
+        <img ref={heartRef} src={HeartFilter} alt="Heart Filter" style={{ display: "none" }} />
+        <img ref={glassesRef} src={GlassesFilter} alt="Glasses Filter" style={{ display: "none" }} />
 
         {/* 필터 선택 버튼 */}
         <div className="filter-buttons">
