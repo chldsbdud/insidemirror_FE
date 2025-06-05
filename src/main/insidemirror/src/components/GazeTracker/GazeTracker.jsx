@@ -5,7 +5,7 @@ function GazeTracker({ onGaze }) {
     let socket;
 
     const connect = () => {
-      socket = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_API_BASE_URL}`);
+      socket = new WebSocket(`${process.env.REACT_APP_WEBSOCKET_API_BASE_UR}/ws`);
 
       socket.onopen = () => {
         console.log("WebSocket connected");
