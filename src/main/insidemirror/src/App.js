@@ -80,7 +80,13 @@ function AnimatedRoutes({ authenticated, setAuthenticated, userName, setUserName
               path="/mobile"
               element={
                 !authenticated ? (
-                  <LockScreen onAuthenticated={() => setAuthenticated(true)} onUserDetected={(name) => setUserName(name)} />
+                  <LockScreen
+                    onAuthenticated={() => setAuthenticated(true)}
+                    onUserDetected={(name) => {
+                      setUserName(name);
+                      localStorage.setItem("userName", name); // 이름을 로컬스토리지에 저장
+                    }}
+                  />
                 ) : (
                   <MainScreen userName={userName} onLogout={() => setAuthenticated(false)} />
                 )

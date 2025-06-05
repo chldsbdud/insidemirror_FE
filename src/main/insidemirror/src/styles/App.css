@@ -16,12 +16,12 @@ body {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  width: 100%; /* 고정 가로 크기 */
-  height: 100vh; /* 세로 크기는 브라우저 높이에 맞춤 */
-  background-color: black; /* 내부 앱 배경은 검은색 */
+  width: 100%;
+  height: 100vh;
+  background-color: black;
   color: white;
   font-family: Arial, sans-serif;
-  box-shadow: 0 0 2vh rgba(0, 0, 0, 0.5); /* 약간의 그림자 효과 */
+  box-shadow: 0 0 2vh rgba(0, 0, 0, 0.5);
 }
 
 /* 하단 섹션 */
@@ -68,7 +68,7 @@ body {
 }
 
 .time {
-  font-size: 7vh;
+  font-size: 8vh;
   font-weight: bold;
   margin-left: 10px;
 }

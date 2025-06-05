@@ -3,17 +3,18 @@
 
 .music-player-container {
   width: 25vw;
-  background-color: rgba(255, 255, 255, 0.08);
+  border: 0.1vh solid rgba(255, 255, 255, 0.2);
   border-radius: 2vh;
   backdrop-filter: blur(4px);
-  color: white;
+  color: #eee;
   padding: 1.5vh;
   box-sizing: border-box;
   text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
   gap: 1vh;
+  margin-top: 20px;
 }
 
 .album-thumbnail img {
@@ -29,8 +30,7 @@
 }
 
 .music-title {
-  font-weight: bold;
-  margin-bottom: 0.3vh;
+  font-size: 14px;
 }
 
 .music-author {
@@ -43,7 +43,6 @@
   align-items: center;
   justify-content: space-around;
   gap: 1vw;
-  margin-top: 1vh;
 }
 
 .music-controls button {
@@ -52,6 +51,17 @@
   font-size: 1.6vh;
   color: white;
   cursor: pointer;
+  width: 100px;
+  height: 50px; /* 필요 시 높이도 지정 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.music-controls button svg {
+  width: 100%;
+  height: auto;
+  max-width: 32px;
 }
 
 .volume-control {
@@ -93,4 +103,13 @@ iframe[src*="youtube.com"] {
   background-color: #999;
   color: white;
   font-weight: bold;
+}
+
+.nowPlayBox {
+  display: flex;
+  justify-content: left;
+  gap: 10px;
+  img {
+    width: 20px;
+  }
 }

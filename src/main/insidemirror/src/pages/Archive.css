@@ -10,7 +10,7 @@ body,
 html {
   font-family: "Pretendard", sans-serif;
   height: 100%;
-  background: linear-gradient(to bottom, #000000, #2f2f2f);
+  background: #000000;
 }
 
 .archive-container {
@@ -18,7 +18,7 @@ html {
   min-height: 100vh;
   margin: 0 auto;
   padding: 2rem 1.5rem;
-  background: linear-gradient(to bottom, #000000, #2f2f2f);
+  background: #000000;
   color: #000000;
   font-family: "Pretendard", sans-serif;
   position: relative;

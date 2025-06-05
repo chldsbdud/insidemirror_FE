@@ -7,43 +7,11 @@ import Schedule from "./Schedule";
 import FaceAnimation from "./FaceAnimation";
 import WeatherWidget from "./WeatherWidget";
 import MusicPlayer from "./MusicPlayer";
-import DynamicMic from "./DynamicMic";
 import MouseFollower from "./MouseFollower";
 import GazeRingZone from "./GazeTracker/GazeRingZone";
 import GazeDot from "./GazeTracker/GazeDot";
 import GazeTracker from "./GazeTracker/GazeTracker";
 import Chatbot from "./Chatbot";
-// const ChatbotComponent = () => {
-//   const [latestResponse, setLatestResponse] = useState("");
-
-//   const fetchLatestMessage = async () => {
-//     const client_id = "default";
-
-//     try {
-//       const response = await fetch(`https://number5.store/chatbot/response/${client_id}`);
-//       if (!response.ok) throw new Error("네트워크 응답 실패");
-
-//       const data = await response.json();
-//       console.log("최신 응답:", data.text);
-
-//       setLatestResponse(data.text);
-//     } catch (error) {
-//       console.error("에러 발생:", error);
-//     }
-//   };
-
-//   useEffect(() => {
-//     const interval = setInterval(fetchLatestMessage, 1000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   return (
-//     <div>
-//       <h3 className="chatbot">AI 응답</h3>
-//       <p>{latestResponse}</p>
-//     </div>
-//   );
-// };
 
 //메인 함수 시작
 function Main() {
@@ -182,12 +150,12 @@ function Main() {
             <div className="time">{time}</div>
             <div className="date">{date}</div>
             {/* <Hello /> */}
-            <Schedule name={currentName} />
             <MusicPlayer />
+            <Schedule name={currentName} />
           </div>
         </div>
         <div className="middle-section">
-          {/* <FaceAnimation /> */}
+          <FaceAnimation />
           <video ref={videoRef} autoPlay muted style={{ width: "0%" }} />
           <canvas ref={canvasRef} style={{ display: "none" }} />
           <Chatbot />

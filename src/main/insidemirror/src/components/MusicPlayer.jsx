@@ -3,6 +3,7 @@ import { IoPause, IoPlay, IoPlaySkipBack, IoPlaySkipForward } from "react-icons/
 import { useYoutube } from "../useYoutube.ts";
 import { PlayerState } from "../types.ts";
 import "../styles/MusicPlayer.css";
+import SoundWave from "../img/sound-wave.png";
 
 const playlists = ["PLVI3CAcQB7GM7pBqn8WYVkSKn2QfUbS2E"];
 
@@ -20,8 +21,9 @@ function MusicPlayer() {
   return (
     <div className="player-container">
       <div className="music-player-container">
-        <div className="album-thumbnail">
-          <img src={playerDetails.thumbnail} alt="Album Art" />
+        <div className="nowPlayBox">
+          <img src={SoundWave} />
+          <div>Now Playing</div>
         </div>
         <div className="music-info">
           <div className="music-title">{playerDetails.title}</div>

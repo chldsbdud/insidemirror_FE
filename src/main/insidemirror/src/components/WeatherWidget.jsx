@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import "../styles/WeatherWidget.css";
 
@@ -11,6 +11,21 @@ function WeatherWidget() {
   const [hourly, setHourly] = useState([]);
   const [showDetail, setShowDetail] = useState(false);
   const [isContentVisible, setIsContentVisible] = useState(false);
+
+  //좌표 구하기
+  const weatherRef = useRef(null);
+
+  useEffect(() => {
+    if (weather && weatherRef.current) {
+      const rect = weatherRef.current.getBoundingClientRect();
+      console.log("Weather Summary 좌표:", {
+        x: rect.left,
+        y: rect.top,
+        width: rect.width,
+        height: rect.height,
+      });
+    }
+  }, [weather]); // weather가 바뀌었을 때만 실행
 
   const toggleDetail = () => {
     if (!showDetail) {
@@ -65,7 +80,7 @@ function WeatherWidget() {
       {/* 요약 정보 */}
       <div className={`fade-section ${showDetail ? "fade-out" : "fade-in"}`}>
         {weather && (
-          <div className="weather-summary">
+          <div className="weather-summary" ref={weatherRef}>
             {weather.icon && <img className="weather-icon" src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`} alt="날씨 아이콘" />}
             <div className="weather-location">{weather.city}</div>
             <div className="weather-status">{weather.status}</div>
