@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../styles/GazeRingZone.css";
+
 import { useNavigate } from "react-router-dom";
 
 function GazeRingZone({ gaze, zones }) {
@@ -116,7 +117,7 @@ function GazeRingZone({ gaze, zones }) {
           </linearGradient>
         </defs>
         <circle cx="30" cy="30" r="25" className="gauge-bg" />
-        <circle cx="30" ㄴ cy="30" r="25" className="gauge-progress" strokeDasharray={157} strokeDashoffset={157 - (progress / 100) * 157} />
+        <circle cx="30" cy="30" r="25" className="gauge-progress" strokeDasharray={157} strokeDashoffset={157 - (progress / 100) * 157} />
       </svg>
     </div>
   );
