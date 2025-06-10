@@ -51,7 +51,7 @@ function GazeRingZone({ gaze, zones }) {
         console.log("진행률:", progressRef.current);
 
         if (progressRef.current >= 100) {
-          console.log("조건 충족 → 이동 실행", zones[activeKey].path);
+          console.log("조건 충족 → 버튼 클릭 실행");
           clearInterval(timerRef.current);
           timerRef.current = null;
           progressRef.current = 0;
@@ -60,8 +60,13 @@ function GazeRingZone({ gaze, zones }) {
           const { x, y, width, height } = zones[activeKey];
           const centerX = x + width / 2;
           const centerY = y + height / 2;
-          if (zoneElementRef.current) {
-            zoneElementRef.current.click();
+
+          const el = document.elementFromPoint(centerX, centerY);
+          if (el) {
+            console.log("클릭 대상 요소:", el);
+            el.click();
+          } else {
+            console.warn("클릭할 요소를 찾지 못했습니다.");
           }
         }
       }, 50);

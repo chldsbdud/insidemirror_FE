@@ -1,6 +1,6 @@
 .gaze-zone {
   position: fixed;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: 1000;
 }
 
