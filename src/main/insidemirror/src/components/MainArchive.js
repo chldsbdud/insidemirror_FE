@@ -17,6 +17,8 @@ function MainArchive() {
   const [showModal, setShowModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const leftBtnRef = useRef(null);
+  const rightBtnRef = useRef(null);
 
   //이미지 불러오기
   const userName = localStorage.getItem("userName") || "Unknown";
@@ -107,6 +109,24 @@ function MainArchive() {
     handleClose();
   };
 
+  useEffect(() => {
+    const logRect = (name, ref) => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        console.log(`${name} 버튼 좌표:`, {
+          x: rect.left,
+          y: rect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    };
+
+    // 컴포넌트가 처음 마운트될 때 한 번만 좌표 출력
+    logRect("왼쪽", leftBtnRef);
+    logRect("오른쪽", rightBtnRef);
+  }, []);
+
   return (
     <>
       <div className="archive-box">
@@ -134,33 +154,27 @@ function MainArchive() {
         </div>
 
         {/* 우측: 파일 표시 */}
+
         <div className="right-panel">
           <div className="list-box">
             <img src={Folder} alt="folder" />
             <h3>파일 미리보기</h3>
           </div>
 
-          {selectedItem && selectedItem.type === "file" ? (
-            <div
-              className="file-preview-pane"
-              style={{
-                maxHeight: "75vh",
-                overflowY: "auto",
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "1rem",
-              }}
-            >
-              {selectedItem.file && selectedItem.file.type === "application/pdf" ? (
-                <PDFViewer file={selectedItem.file} />
-              ) : (
-                <p>미리보기를 지원하지 않는 파일 형식입니다.</p>
-              )}
-            </div>
-          ) : (
-            <p style={{ color: "#aaa" }}>선택된 파일이 없습니다.</p>
-          )}
+          <div
+            className="file-preview-pane"
+            style={{
+              maxHeight: "75vh",
+              overflowY: "auto",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              padding: "1rem",
+            }}
+          >
+            <PDFViewer file={selectedItem?.file || null} leftBtnRef={leftBtnRef} rightBtnRef={rightBtnRef} />
+          </div>
         </div>
+
         {showModal && (
           <div className={`bottom-sheet ${isClosing ? "slide-down" : "slide-up"}`}>
             {!newArchive.type ? (
@@ -213,40 +227,29 @@ function MainArchive() {
   );
 }
 
-//pdf 관련 코드
-function PDFViewer({ file }) {
+function PDFViewer({ file, leftBtnRef, rightBtnRef }) {
   const [pdf, setPdf] = useState(null);
   const canvasRef = useState(null);
   const renderTaskRef = useRef(null);
+  const buttonRef = useRef();
 
-  // ✅ 초기 페이지: 로컬스토리지에서 불러오기
   const initialPage = parseInt(localStorage.getItem("pdfPage") || "1", 10);
   const [pageNumber, setPageNumber] = useState(initialPage);
 
-  // ✅ 페이지 변경 시 로컬스토리지에 저장
   useEffect(() => {
     localStorage.setItem("pdfPage", pageNumber.toString());
   }, [pageNumber]);
 
   useEffect(() => {
     const loadPDF = async () => {
+      if (!file) return;
       const arrayBuffer = await file.arrayBuffer();
       const loadingTask = getDocument({ data: arrayBuffer });
       const loadedPdf = await loadingTask.promise;
       setPdf(loadedPdf);
     };
-
     loadPDF();
   }, [file]);
-
-  const handleFileUpload = (file) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result;
-      localStorage.setItem("savedPdf", base64); // 저장
-    };
-    reader.readAsDataURL(file); // Base64로 읽기
-  };
 
   useEffect(() => {
     const renderPage = async () => {
@@ -264,11 +267,7 @@ function PDFViewer({ file }) {
         renderTaskRef.current.cancel();
       }
 
-      const renderContext = {
-        canvasContext: context,
-        viewport,
-      };
-
+      const renderContext = { canvasContext: context, viewport };
       const renderTask = page.render(renderContext);
       renderTaskRef.current = renderTask;
 
@@ -280,39 +279,43 @@ function PDFViewer({ file }) {
         }
       }
     };
-
     renderPage();
   }, [pdf, pageNumber, canvasRef]);
-
-  if (!pdf) return <p>PDF 로딩 중...</p>;
 
   return (
     <div style={{ position: "relative", paddingBottom: "60px" }}>
       <div style={{ textAlign: "center" }}>
-        <canvas ref={(el) => (canvasRef[0] = el)} style={{ width: "100%", maxWidth: "800px", border: "1px solid #ccc" }} />
+        {file ? (
+          <canvas ref={(el) => (canvasRef[0] = el)} style={{ width: "100%", maxWidth: "800px", border: "1px solid #ccc" }} />
+        ) : (
+          <p style={{ color: "#aaa" }}>파일을 업로드해 주세요.</p>
+        )}
       </div>
 
+      {/* 항상 떠 있는 페이지 이동 버튼 */}
       <div
+        ref={buttonRef}
         style={{
           position: "fixed",
           bottom: "15%",
-          right: "10%",
+          left: "50%",
           transform: "translateX(-50%)",
+
+          border: "1px solid #ddd",
           borderRadius: "8px",
-          padding: "8px 16px",
+          padding: "10px 16px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
           display: "flex",
           alignItems: "center",
           gap: "1rem",
           zIndex: 1000,
         }}
       >
-        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.max(1, p - 1))}>
+        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.max(1, p - 1))} ref={leftBtnRef}>
           <img src={LeftBtn} alt="이전" />
         </button>
-        <span>
-          {pageNumber} / {pdf?.numPages}
-        </span>
-        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.min(pdf.numPages, p + 1))}>
+        <span>{pageNumber}</span>
+        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.min(pdf?.numPages || 1, p + 1))} ref={rightBtnRef}>
           <img src={RightBtn} alt="다음" />
         </button>
       </div>

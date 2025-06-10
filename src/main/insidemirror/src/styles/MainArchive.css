@@ -165,7 +165,7 @@
 }
 
 .right-panel {
-  flex: 1;
+  /* flex: 1; */
   padding-left: 20px;
 }
 
