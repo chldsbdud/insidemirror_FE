@@ -61,7 +61,10 @@ function GazeRingZone({ gaze, zones }) {
           const centerX = x + width / 2;
           const centerY = y + height / 2;
 
+          zoneElementRef.current.style.pointerEvents = "none";
           const el = document.elementFromPoint(centerX, centerY);
+          zoneElementRef.current.style.pointerEvents = "auto";
+
           if (el) {
             console.log("클릭 대상 요소:", el);
             el.click();
