@@ -8,6 +8,7 @@ function GazeRingZone({ gaze, zones }) {
   const progressRef = useRef(0);
   const zoneRef = useRef(null);
   const timerRef = useRef(null);
+  const zoneElementRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +46,7 @@ function GazeRingZone({ gaze, zones }) {
       console.log("⏱ 타이머 시작");
 
       timerRef.current = setInterval(() => {
-        progressRef.current += 1.67;
+        progressRef.current += 5; //1.5초는 3.33,
         setProgress(progressRef.current);
         console.log("진행률:", progressRef.current);
 
@@ -59,13 +60,8 @@ function GazeRingZone({ gaze, zones }) {
           const { x, y, width, height } = zones[activeKey];
           const centerX = x + width / 2;
           const centerY = y + height / 2;
-          const targetElement = document.elementFromPoint(centerX, centerY);
-
-          if (targetElement) {
-            console.log("🖱️ DOM 클릭 시도 →", targetElement);
-            targetElement.click();
-          } else {
-            console.warn("⚠️ 클릭할 요소를 찾을 수 없습니다.");
+          if (zoneElementRef.current) {
+            zoneElementRef.current.click();
           }
         }
       }, 50);
@@ -109,6 +105,7 @@ function GazeRingZone({ gaze, zones }) {
       {/* 하이라이트 박스 */}
       {currentZone && (
         <div
+          ref={zoneElementRef} // ← 여기!
           className="zone-highlight"
           style={{
             left: zones[currentZone].x,
