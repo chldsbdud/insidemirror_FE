@@ -10,9 +10,20 @@ import MusicPlayer from "./MusicPlayer";
 import MouseFollower from "./MouseFollower";
 import Chatbot from "./Chatbot";
 
-//메인 함수 시작
+// ABKO 웹캠 찾는 함수
+async function findABKOCamera() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    const videoDevices = devices.filter((device) => device.kind === "videoinput");
+    return videoDevices.find((device) => device.label.includes("ABKO APC720 HD WEBCAM"));
+  } catch (error) {
+    console.error("장치 검색 오류:", error);
+    return null;
+  }
+}
+
 function Main() {
-  // 새로고침 시 사용자 이름 초기화
+  // 기존 코드 유지
   useEffect(() => {
     localStorage.removeItem("userName");
   }, []);
@@ -45,15 +56,28 @@ function Main() {
     }
   }, [currentName]);
 
+  // 카메라 시작 로직 수정 부분
   useEffect(() => {
     const startCamera = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // ABKO 카메라 찾기
+        const abkoCamera = await findABKOCamera();
+
+        // 카메라 설정
+        const constraints = {
+          video: {
+            deviceId: abkoCamera
+              ? { exact: abkoCamera.deviceId } // ABKO 있으면 지정
+              : true, // 없으면 기본 카메라
+          },
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
         }
       } catch (error) {
-        console.error("Error accessing the camera:", error);
+        console.error("카메라 접근 오류:", error);
       }
     };
 
@@ -67,6 +91,7 @@ function Main() {
     };
   }, []);
 
+  // 나머지 기존 코드 모두 유지
   useEffect(() => {
     const intervalId = setInterval(captureAndSendFrame, 1000);
     return () => clearInterval(intervalId);
@@ -119,7 +144,7 @@ function Main() {
         const data = await response.json();
         if (data.currentName) {
           setCurrentName(data.currentName);
-          localStorage.setItem("userName", data.currentName); //로컬스토리지에 저장
+          localStorage.setItem("userName", data.currentName);
           setRemainingTime(data.remainingTime);
         } else {
           setRemainingTime((prev) => (prev > 0 ? prev - 1 : 0));
@@ -136,11 +161,9 @@ function Main() {
 
       <div className="bottom-section">
         <div className="left-section">
-          {/* <h2 className="userName">Hello, {currentName} !</h2> */}
           <div className="time-weather">
             <div className="time">{time}</div>
             <div className="date">{date}</div>
-            {/* <Hello /> */}
             <MusicPlayer />
             <Schedule name={currentName} />
           </div>

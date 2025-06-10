@@ -16,7 +16,14 @@ import MainArchive from "./components/MainArchive";
 import GazeTracker from "./components/GazeTracker/GazeTracker";
 import GazeDot from "./components/GazeTracker/GazeDot";
 import GazeRingZone from "./components/GazeTracker/GazeRingZone";
+import ZoneManager from "./components/GazeTracker/ZoneManager";
 import "./styles/App.css";
+
+//BottomNav 제어
+function BottomNavWrapper() {
+  const location = useLocation();
+  return location.pathname !== "/mobile" ? <BottomNav /> : null;
+}
 
 function App() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -61,61 +68,8 @@ function App() {
       <div className="app">
         <GazeTracker onGaze={setGaze} />
         <GazeDot x={gaze.x} y={gaze.y} />
-        <GazeRingZone
-          gaze={gaze}
-          zones={{
-            weather: {
-              x: 909.46,
-              y: 133.85,
-              width: 318.66,
-              height: 213.66,
-              path: "/weather",
-            },
-            archive: {
-              x: 461,
-              y: 633.33,
-              width: 70,
-              height: 73.33,
-              path: "/archive",
-            },
-            home: {
-              x: 605,
-              y: 633.33,
-              width: 70,
-              height: 73.33,
-              path: "/home",
-            },
-            camera: {
-              x: 749,
-              y: 633.33,
-              width: 70,
-              height: 73.33,
-              path: "/camera",
-            },
-            musicPrev: {
-              x: 73.44792175292969,
-              y: 215.96875,
-              width: 90.5,
-              height: 50,
-              path: "/music/prev",
-            },
-            musicPlayPause: {
-              x: 176.73959350585938,
-              y: 215.96875,
-              width: 90.5,
-              height: 50,
-              path: "/music/play-pause",
-            },
-            musicNext: {
-              x: 280.03125,
-              y: 215.96875,
-              width: 90.5,
-              height: 50,
-              path: "/music/next",
-            },
-          }}
-        />
-        <BottomNav />
+        <ZoneManager gaze={gaze} />
+        <BottomNavWrapper />
         <div className="page-container">
           <AnimatedRoutes
             authenticated={authenticated}

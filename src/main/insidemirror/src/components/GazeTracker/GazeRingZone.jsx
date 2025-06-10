@@ -56,10 +56,16 @@ function GazeRingZone({ gaze, zones }) {
           progressRef.current = 0;
           setProgress(0);
 
-          if (zones[activeKey].path) {
-            navigate(zones[activeKey].path);
+          const { x, y, width, height } = zones[activeKey];
+          const centerX = x + width / 2;
+          const centerY = y + height / 2;
+          const targetElement = document.elementFromPoint(centerX, centerY);
+
+          if (targetElement) {
+            console.log("🖱️ DOM 클릭 시도 →", targetElement);
+            targetElement.click();
           } else {
-            console.warn("⚠️ path 없음 → 이동 생략");
+            console.warn("⚠️ 클릭할 요소를 찾을 수 없습니다.");
           }
         }
       }, 50);
@@ -90,35 +96,61 @@ function GazeRingZone({ gaze, zones }) {
   }
 
   const { x, y, width, height } = zones[currentZone];
-  const gaugeX = x;
-  const gaugeY = y;
+
+  // 게이지를 해당 zone의 중심으로 이동
+  const gaugeSize = 60;
+  const gaugeX = x + width / 2 - gaugeSize / 2;
+  const gaugeY = y + height / 2 - gaugeSize / 2;
 
   console.log(`📍 gauge 렌더링 좌표: (${gaugeX}, ${gaugeY})`);
 
   return (
-    <div
-      className="gaze-zone"
-      style={{
-        left: gaugeX,
-        top: gaugeY,
-        width: 60,
-        height: 60,
-        position: "fixed", // fixed 유지
-        pointerEvents: "none",
-        zIndex: 1000,
-      }}
-    >
-      <svg className="gauge-ring" width="60" height="60">
-        <defs>
-          <linearGradient id="gradient-purple" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#a960ee" />
-            <stop offset="100%" stopColor="#ff6ec4" />
-          </linearGradient>
-        </defs>
-        <circle cx="30" cy="30" r="25" className="gauge-bg" />
-        <circle cx="30" cy="30" r="25" className="gauge-progress" strokeDasharray={157} strokeDashoffset={157 - (progress / 100) * 157} />
-      </svg>
-    </div>
+    <>
+      {/* 하이라이트 박스 */}
+      {currentZone && (
+        <div
+          className="zone-highlight"
+          style={{
+            left: zones[currentZone].x,
+            top: zones[currentZone].y,
+            width: zones[currentZone].width,
+            height: zones[currentZone].height,
+          }}
+        />
+      )}
+      <div
+        className="gaze-zone"
+        style={{
+          left: gaugeX,
+          top: gaugeY,
+          width: 60,
+          height: 60,
+          position: "fixed", // fixed 유지
+          pointerEvents: "none",
+          zIndex: 1000,
+        }}
+      >
+        <svg className="gauge-ring" width="60" height="60">
+          <defs>
+            <linearGradient
+              // id="gradient-purple"
+              id="gradient-blue"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              {/* <stop offset="0%" stopColor="#a960ee" /> */}
+              {/* <stop offset="100%" stopColor="#ff6ec4" /> */}
+              <stop offset="0%" stopColor="#1d354b" />
+              <stop offset="100%" stopColor="#4a7ab7" />
+            </linearGradient>
+          </defs>
+          <circle cx="30" cy="30" r="25" className="gauge-bg" />
+          <circle cx="30" cy="30" r="25" className="gauge-progress" strokeDasharray={157} strokeDashoffset={157 - (progress / 100) * 157} />
+        </svg>
+      </div>
+    </>
   );
 }
 
