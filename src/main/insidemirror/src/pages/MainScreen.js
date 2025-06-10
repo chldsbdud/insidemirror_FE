@@ -10,15 +10,15 @@ function MainScreen({ userName, onLogout, onGoToSchedules }) {
   const navigate = useNavigate(); // 라우터 훅
 
   const handleOpenSettings = () => {
-    navigate("/settings"); // Settings 페이지로 이동
+    navigate("/mobile/settings"); // Settings 페이지로 이동
   };
 
   const handleOpenSchedules = () => {
-    navigate("/schedules", { state: { userName } });
+    navigate("/mobile/schedules", { state: { userName } });
   };
 
   const handleOpenArchive = () => {
-    navigate("/archive");
+    navigate("/mainArchive");
   };
   return (
     <div className="main-screen">

@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import "../styles/MainArchive.css";
 import ArchiveCard from "./ArchiveCard";
 import Archive from "../img/archive.png";
 import Photo from "../img/photo.png";
 import Folder from "../img/upload-folder.png";
+import { GlobalWorkerOptions, getDocument } from "pdfjs-dist";
+import workerSrc from "pdfjs-dist/build/pdf.worker.entry";
+import LeftBtn from "../img/leftBtn.png";
+import RightBtn from "../img/rightBtn.png";
+GlobalWorkerOptions.workerSrc = workerSrc;
 
 function MainArchive() {
   const [archives, setArchives] = useState([]);
@@ -80,8 +85,14 @@ function MainArchive() {
 
     setArchives((prev) => [...prev, newItem]);
 
+    // if (newItem.type === "file") {
+    //   setSelectedItem(newItem); // 파일이면 우측에 바로 표시
+    // }
     if (newItem.type === "file") {
-      setSelectedItem(newItem); // 파일이면 우측에 바로 표시
+      setSelectedItem({
+        ...newItem,
+        file: newArchive.file, // 실제 File 객체를 같이 넘겨줘야 함
+      });
     }
 
     setNewArchive({
@@ -140,7 +151,11 @@ function MainArchive() {
                 padding: "1rem",
               }}
             >
-              <embed src={selectedItem.fileURL} type="application/pdf" width="600px" height="1200px" />
+              {selectedItem.file && selectedItem.file.type === "application/pdf" ? (
+                <PDFViewer file={selectedItem.file} />
+              ) : (
+                <p>미리보기를 지원하지 않는 파일 형식입니다.</p>
+              )}
             </div>
           ) : (
             <p style={{ color: "#aaa" }}>선택된 파일이 없습니다.</p>
@@ -195,6 +210,113 @@ function MainArchive() {
         )}
       </div>
     </>
+  );
+}
+
+//pdf 관련 코드
+function PDFViewer({ file }) {
+  const [pdf, setPdf] = useState(null);
+  const canvasRef = useState(null);
+  const renderTaskRef = useRef(null);
+
+  // ✅ 초기 페이지: 로컬스토리지에서 불러오기
+  const initialPage = parseInt(localStorage.getItem("pdfPage") || "1", 10);
+  const [pageNumber, setPageNumber] = useState(initialPage);
+
+  // ✅ 페이지 변경 시 로컬스토리지에 저장
+  useEffect(() => {
+    localStorage.setItem("pdfPage", pageNumber.toString());
+  }, [pageNumber]);
+
+  useEffect(() => {
+    const loadPDF = async () => {
+      const arrayBuffer = await file.arrayBuffer();
+      const loadingTask = getDocument({ data: arrayBuffer });
+      const loadedPdf = await loadingTask.promise;
+      setPdf(loadedPdf);
+    };
+
+    loadPDF();
+  }, [file]);
+
+  const handleFileUpload = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result;
+      localStorage.setItem("savedPdf", base64); // 저장
+    };
+    reader.readAsDataURL(file); // Base64로 읽기
+  };
+
+  useEffect(() => {
+    const renderPage = async () => {
+      if (!pdf || !canvasRef[0]) return;
+
+      const page = await pdf.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: 0.7 });
+      const canvas = canvasRef[0];
+      const context = canvas.getContext("2d");
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      if (renderTaskRef.current) {
+        renderTaskRef.current.cancel();
+      }
+
+      const renderContext = {
+        canvasContext: context,
+        viewport,
+      };
+
+      const renderTask = page.render(renderContext);
+      renderTaskRef.current = renderTask;
+
+      try {
+        await renderTask.promise;
+      } catch (err) {
+        if (err?.name !== "RenderingCancelledException") {
+          console.error("렌더링 실패:", err);
+        }
+      }
+    };
+
+    renderPage();
+  }, [pdf, pageNumber, canvasRef]);
+
+  if (!pdf) return <p>PDF 로딩 중...</p>;
+
+  return (
+    <div style={{ position: "relative", paddingBottom: "60px" }}>
+      <div style={{ textAlign: "center" }}>
+        <canvas ref={(el) => (canvasRef[0] = el)} style={{ width: "100%", maxWidth: "800px", border: "1px solid #ccc" }} />
+      </div>
+
+      <div
+        style={{
+          position: "fixed",
+          bottom: "15%",
+          right: "10%",
+          transform: "translateX(-50%)",
+          borderRadius: "8px",
+          padding: "8px 16px",
+          display: "flex",
+          alignItems: "center",
+          gap: "1rem",
+          zIndex: 1000,
+        }}
+      >
+        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.max(1, p - 1))}>
+          <img src={LeftBtn} alt="이전" />
+        </button>
+        <span>
+          {pageNumber} / {pdf?.numPages}
+        </span>
+        <button className="btnStyle" onClick={() => setPageNumber((p) => Math.min(pdf.numPages, p + 1))}>
+          <img src={RightBtn} alt="다음" />
+        </button>
+      </div>
+    </div>
   );
 }
 

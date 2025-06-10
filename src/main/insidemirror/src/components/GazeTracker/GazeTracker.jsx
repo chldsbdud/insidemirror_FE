@@ -13,7 +13,6 @@ function GazeTracker({ onGaze }) {
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("Gaze data:", data); // 추가
 
         if (onGaze) {
           onGaze({ x: data.x, y: data.y }); // 외부로 전달!

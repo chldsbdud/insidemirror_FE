@@ -30,6 +30,13 @@ function CameraPage() {
   const [lastGestureTime, setLastGestureTime] = useState(0);
   const [countdown, setCountdown] = useState(null);
 
+  // 필터 버튼 ref 추가
+  const heartButtonRef = useRef(null);
+  const glassesButtonRef = useRef(null);
+  const luckeyButtonRef = useRef(null);
+  const historyButtonRef = useRef(null);
+  const sinnandaButtonRef = useRef(null);
+
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
@@ -42,6 +49,27 @@ function CameraPage() {
         height: rect.height,
       });
     }
+  }, []);
+
+  useEffect(() => {
+    const logRect = (name, ref) => {
+      if (ref.current) {
+        const rect = ref.current.getBoundingClientRect();
+        console.log(`${name} 버튼 좌표:`, {
+          x: rect.left,
+          y: rect.top,
+          width: rect.width,
+          height: rect.height,
+        });
+      }
+    };
+
+    logRect("카메라", captureButtonRef);
+    logRect("하트 필터", heartButtonRef);
+    logRect("안경 필터", glassesButtonRef);
+    logRect("럭키 필터", luckeyButtonRef);
+    logRect("추억 필터", historyButtonRef);
+    logRect("신난다 필터", sinnandaButtonRef);
   }, []);
 
   useEffect(() => {
@@ -303,19 +331,19 @@ function CameraPage() {
 
         {/* 필터 선택 버튼 */}
         <div className="filter-buttons">
-          <button onClick={() => setSelectedFilter("heart")}>
+          <button onClick={() => setSelectedFilter("heart")} ref={heartButtonRef}>
             <img src={HeartFilter} />
           </button>
-          <button onClick={() => setSelectedFilter("glasses")}>
+          <button onClick={() => setSelectedFilter("glasses")} ref={glassesButtonRef}>
             <img src={GlassesFilter} />
           </button>
-          <button onClick={() => setSelectedFilter("luckey")}>
+          <button onClick={() => setSelectedFilter("luckey")} ref={luckeyButtonRef}>
             <img src={luckeyFilter} />
           </button>
-          <button onClick={() => setSelectedFilter("history")}>
+          <button onClick={() => setSelectedFilter("history")} ref={historyButtonRef}>
             <img src={HistoryFilter} />
           </button>
-          <button onClick={() => setSelectedFilter("sinnanda")}>
+          <button onClick={() => setSelectedFilter("sinnanda")} ref={sinnandaButtonRef}>
             <img src={SinnandaFilter} />
           </button>
         </div>
