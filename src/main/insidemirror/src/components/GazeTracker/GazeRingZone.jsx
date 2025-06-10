@@ -47,10 +47,10 @@ function GazeRingZone({ gaze, zones }) {
       timerRef.current = setInterval(() => {
         progressRef.current += 1.67;
         setProgress(progressRef.current);
-        console.log("🟢 진행률:", progressRef.current);
+        console.log("진행률:", progressRef.current);
 
         if (progressRef.current >= 100) {
-          console.log("✅ 조건 충족 → 이동 실행", zones[activeKey].path);
+          console.log("조건 충족 → 이동 실행", zones[activeKey].path);
           clearInterval(timerRef.current);
           timerRef.current = null;
           progressRef.current = 0;
@@ -67,7 +67,7 @@ function GazeRingZone({ gaze, zones }) {
 
     // gaze가 zone 밖일 경우
     if (!activeKey && zoneRef.current !== null) {
-      console.log("🚫 zone 벗어남 → 초기화");
+      console.log("zone 벗어남 → 초기화");
       clearInterval(timerRef.current);
       timerRef.current = null;
       progressRef.current = 0;

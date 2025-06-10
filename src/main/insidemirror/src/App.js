@@ -42,6 +42,18 @@ function App() {
     setInitialPath(isMobile ? "/mobile" : "/main");
   }, []);
 
+  useEffect(() => {
+    // 현재 브라우저 해상도 확인
+    console.log("현재 브라우저 해상도:", window.innerWidth, window.innerHeight);
+
+    if (window.innerWidth !== 1920 || window.innerHeight !== 1080) {
+      alert(
+        `⚠️ 현재 브라우저 해상도는 ${window.innerWidth} x ${window.innerHeight}입니다.\n` +
+          `좌표계가 1920 x 1080에 맞춰져 있다면, 실제 위치가 다를 수 있습니다.`
+      );
+    }
+  }, []);
+
   if (!initialPath) return null; // 초기 경로 결정 전에는 아무 것도 렌더링하지 않음
 
   return (
