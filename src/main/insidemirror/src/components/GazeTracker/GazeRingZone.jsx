@@ -98,20 +98,25 @@ function GazeRingZone({ gaze, zones }) {
   const gaugeX = x + width / 2 - gaugeSize / 2;
   const gaugeY = y + height / 2 - gaugeSize / 2;
 
-  console.log(`📍 gauge 렌더링 좌표: (${gaugeX}, ${gaugeY})`);
-
   return (
     <>
       {/* 하이라이트 박스 */}
       {currentZone && (
         <div
-          ref={zoneElementRef} // ← 여기!
+          ref={zoneElementRef}
           className="zone-highlight"
+          onClick={() => {
+            // 클릭은 발생하지만 아무 동작도 하지 않음
+            console.log("클릭 발생했지만 이동은 없음");
+          }}
           style={{
             left: zones[currentZone].x,
             top: zones[currentZone].y,
             width: zones[currentZone].width,
             height: zones[currentZone].height,
+            position: "fixed",
+            pointerEvents: "auto",
+            zIndex: 999,
           }}
         />
       )}

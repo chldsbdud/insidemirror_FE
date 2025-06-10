@@ -36,21 +36,24 @@ const pageZones = {
     },
     musicPrev: {
       x: 65.78,
-      y: 195.9,
+      //y: 195.9,
+      y: 220.96,
       width: 90.5,
       height: 50,
       path: "/music/prev",
     },
     musicPlayPause: {
       x: 169.07,
-      y: 195.96,
+      //y: 195.96,
+      y: 220.96,
       width: 90.5,
       height: 50,
       path: "/music/play-pause",
     },
     musicNext: {
       x: 272.36,
-      y: 195.96,
+      //y: 195.96,
+      y: 220.96,
       width: 90.5,
       height: 50,
       path: "/music/next",
@@ -152,7 +155,6 @@ const pageZones = {
       height: 23.33,
       path: "/pdf/next",
     },
-
     // 필요하다면 archive에서만 활성화할 다른 zone도 추가
   },
   // 필요하면 다른 페이지도 추가
@@ -164,8 +166,8 @@ const ZoneManager = ({ gaze }) => {
   // 경로에 맞는 zone만 골라서 반환
   const getCurrentZones = () => {
     if (location.pathname === "/main") return pageZones.main;
-    if (location.pathname === "/camera") return pageZones.camera;
-    if (location.pathname === "/archive") return pageZones.archive;
+    if (location.pathname === "/Camera") return pageZones.camera;
+    if (location.pathname === "/mainArchive") return pageZones.archive;
     // 다른 경로에서는 빈 객체
     return {};
   };
