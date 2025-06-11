@@ -72,7 +72,8 @@ function GazeRingZone({ gaze, zones }) {
               console.log("클릭 대상 버튼:", button);
               button.click();
             } else {
-              console.warn("버튼 요소를 찾지 못했습니다:", el);
+              console.log("일반 요소 클릭:", el);
+              el.click(); // div.weather-widget 같은 경우
             }
           } else {
             console.warn("클릭할 요소를 찾지 못했습니다.");
