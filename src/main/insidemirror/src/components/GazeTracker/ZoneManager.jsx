@@ -36,7 +36,6 @@ const pageZones = {
     },
     musicPrev: {
       x: 65.78,
-      //y: 195.9,
       y: 220.96,
       width: 90.5,
       height: 50,
@@ -44,7 +43,6 @@ const pageZones = {
     },
     musicPlayPause: {
       x: 169.07,
-      //y: 195.96,
       y: 220.96,
       width: 90.5,
       height: 50,
@@ -52,13 +50,11 @@ const pageZones = {
     },
     musicNext: {
       x: 272.36,
-      //y: 195.96,
       y: 220.96,
       width: 90.5,
       height: 50,
       path: "/music/next",
     },
-    // 필요하다면 main에서만 활성화할 다른 zone도 추가
   },
   camera: {
     home: {
