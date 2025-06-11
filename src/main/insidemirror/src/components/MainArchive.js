@@ -16,13 +16,23 @@ function MainArchive() {
   const [archives, setArchives] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const today = new Date().toISOString().slice(0, 10);
+  const [selectedItem, setSelectedItem] = useState({
+    type: "file",
+    title: "기본 PDF 파일",
+    file: null,
+    thumbnail: "/img/pdf_icon.png",
+    fileURL: "/sample.pdf",
+    tags: [],
+    date: today,
+    categories: [{ label: "기본 파일", color: "purple" }],
+  });
+
   const leftBtnRef = useRef(null);
   const rightBtnRef = useRef(null);
 
   //이미지 불러오기
   const userName = localStorage.getItem("userName") || "Unknown";
-  const today = new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -127,6 +137,26 @@ function MainArchive() {
     logRect("오른쪽", rightBtnRef);
   }, []);
 
+  //파일 고정
+  useEffect(() => {
+    const fetchDefaultPDF = async () => {
+      try {
+        const res = await fetch("/sample.pdf");
+        const blob = await res.blob();
+        const file = new File([blob], "sample.pdf", { type: blob.type });
+
+        setSelectedItem((prev) => ({
+          ...prev,
+          file,
+        }));
+      } catch (error) {
+        console.error("기본 PDF 불러오기 실패:", error);
+      }
+    };
+
+    fetchDefaultPDF();
+  }, []);
+
   return (
     <>
       <div className="archive-box">
@@ -229,7 +259,7 @@ function MainArchive() {
 
 function PDFViewer({ file, leftBtnRef, rightBtnRef }) {
   const [pdf, setPdf] = useState(null);
-  const canvasRef = useState(null);
+  const canvasRef = useRef(null);
   const renderTaskRef = useRef(null);
   const buttonRef = useRef();
 
@@ -253,11 +283,14 @@ function PDFViewer({ file, leftBtnRef, rightBtnRef }) {
 
   useEffect(() => {
     const renderPage = async () => {
-      if (!pdf || !canvasRef[0]) return;
+      if (!pdf || !canvasRef.current) return;
 
-      const page = await pdf.getPage(pageNumber);
+      const totalPages = pdf.numPages;
+      const validPage = Math.min(Math.max(1, pageNumber), totalPages);
+
+      const page = await pdf.getPage(validPage);
       const viewport = page.getViewport({ scale: 0.7 });
-      const canvas = canvasRef[0];
+      const canvas = canvasRef.current;
       const context = canvas.getContext("2d");
 
       canvas.height = viewport.height;
@@ -280,13 +313,13 @@ function PDFViewer({ file, leftBtnRef, rightBtnRef }) {
       }
     };
     renderPage();
-  }, [pdf, pageNumber, canvasRef]);
+  }, [pdf, pageNumber]);
 
   return (
     <div style={{ position: "relative", paddingBottom: "60px" }}>
       <div style={{ textAlign: "center" }}>
         {file ? (
-          <canvas ref={(el) => (canvasRef[0] = el)} style={{ width: "100%", maxWidth: "800px", border: "1px solid #ccc" }} />
+          <canvas ref={canvasRef} style={{ width: "100%", maxWidth: "800px", border: "1px solid #ccc" }} />
         ) : (
           <p style={{ color: "#aaa" }}>파일을 업로드해 주세요.</p>
         )}
