@@ -12,8 +12,6 @@ body {
   align-items: center;
 }
 .app {
-  width: 1920px;
-  height: 1080px;
   background-color: black;
   color: white;
   font-family: Arial, sans-serif;
