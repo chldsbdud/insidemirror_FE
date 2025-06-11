@@ -6,7 +6,7 @@ import "../styles/FaceAnimation.css";
 function FaceAnimation() {
   return (
     <div className="container">
-      <Lottie animationData={faceAnimation} loop autoplay style={{ width: "150px", height: "150px", display: "flex", margin: "auto 0" }} />
+      <Lottie animationData={faceAnimation} loop autoplay style={{ width: "100px", height: "100px", display: "flex", margin: "auto 0" }} />
     </div>
   );
 }
