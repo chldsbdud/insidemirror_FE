@@ -6,21 +6,18 @@ function Schedule({ name }) {
   const [todayStr, setTodayStr] = useState("");
   const [todaySchedules, setTodaySchedules] = useState([]);
   const [tomorrowSchedules, setTomorrowSchedules] = useState([]);
-  const [newTitle, setNewTitle] = useState("");
-  const [newDate, setNewDate] = useState("2025-04-18");
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
   useEffect(() => {
     if (!name || name === "게스트" || name === "Unknown") {
-      //  이름이 없거나 유효하지 않을 경우 일정 초기화
       setTodayStr("");
       setTodaySchedules([]);
       setTomorrowSchedules([]);
       return;
-    } //  이름이 없는 경우 요청 안 함
+    }
 
-    const todayDate = new Date("2025-04-18");
+    const todayDate = new Date(); // 오늘 날짜
     const tomorrowDate = new Date(todayDate);
     tomorrowDate.setDate(todayDate.getDate() + 1);
 
@@ -46,7 +43,7 @@ function Schedule({ name }) {
 
     fetchForDate(todayDate).then(setTodaySchedules);
     fetchForDate(tomorrowDate).then(setTomorrowSchedules);
-  }, [name]); // 이름이 바뀔 때마다 다시 요청
+  }, [name]);
 
   return (
     <div className="schedule-container">
