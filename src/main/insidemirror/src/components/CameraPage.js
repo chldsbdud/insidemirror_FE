@@ -8,6 +8,7 @@ import GlassesFilter from "../img/glassMando.png";
 import luckeyFilter from "../img/luckey.png";
 import HistoryFilter from "../img/history.png";
 import SinnandaFilter from "../img/sinnanda.png";
+import GanadiFilter from "../img/ganadi.png";
 import CameraIcon from "../img/camera2.png";
 import * as hands from "@mediapipe/hands";
 
@@ -16,6 +17,7 @@ function CameraPage() {
   const canvasRef = useRef(null);
   const heartRef = useRef(null);
   const glassesRef = useRef(null);
+  const ganadiRef = useRef(null);
   const luckeyRef = useRef(null);
   const historyRef = useRef(null);
   const sinnandaRef = useRef(null);
@@ -34,6 +36,7 @@ function CameraPage() {
   const luckeyButtonRef = useRef(null);
   const historyButtonRef = useRef(null);
   const sinnandaButtonRef = useRef(null);
+  const ganadiButtonRef = useRef(null);
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
@@ -65,6 +68,7 @@ function CameraPage() {
     logRect("카메라", captureButtonRef);
     logRect("하트 필터", heartButtonRef);
     logRect("안경 필터", glassesButtonRef);
+    logRect("가나디 필터", ganadiButtonRef);
     logRect("럭키 필터", luckeyButtonRef);
     logRect("추억 필터", historyButtonRef);
     logRect("신난다 필터", sinnandaButtonRef);
@@ -127,6 +131,14 @@ function CameraPage() {
         const x = jaw.x * canvasElement.width - imageWidth / 2 - imageWidth * 0.9;
         const y = jaw.y * canvasElement.height - imageHeight / 2 + canvasElement.height * 0.12;
         canvasCtx.drawImage(glassesRef.current, x, y, imageWidth, imageHeight);
+      }
+      //가나디
+      if (selectedFilter === "ganadi" && ganadiRef.current?.complete) {
+        const imageWidth = 250;
+        const imageHeight = 250;
+        const x = (canvasElement.width - imageWidth) / 8;
+        const y = canvasElement.height - imageHeight;
+        canvasCtx.drawImage(ganadiRef.current, x, y, imageWidth, imageHeight);
       }
 
       //럭키한 하루
@@ -324,8 +336,34 @@ function CameraPage() {
         <div className="camera-container">
           <video ref={videoRef} style={{ display: "none", transform: "scaleX(1)" }} />
           <canvas ref={canvasRef} className="face-canvas" />
-
           {countdown !== null && <div className="countdown-overlay">{countdown}</div>}
+
+          {/* 필터 버튼들 */}
+          <div className="filter-buttons">
+            <div className="left">
+              <button onClick={() => setSelectedFilter("heart")} ref={heartButtonRef}>
+                <img src={HeartFilter} />
+              </button>
+              <button onClick={() => setSelectedFilter("glasses")} ref={glassesButtonRef}>
+                <img src={GlassesFilter} />
+              </button>
+              <button onClick={() => setSelectedFilter("ganadi")} ref={ganadiButtonRef}>
+                <img src={GanadiFilter} />
+              </button>
+            </div>
+
+            <div className="right">
+              <button onClick={() => setSelectedFilter("luckey")} ref={luckeyButtonRef}>
+                <img src={luckeyFilter} />
+              </button>
+              <button onClick={() => setSelectedFilter("history")} ref={historyButtonRef}>
+                <img src={HistoryFilter} />
+              </button>
+              <button onClick={() => setSelectedFilter("sinnanda")} ref={sinnandaButtonRef}>
+                <img src={SinnandaFilter} />
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* 카메라 촬영 버튼 */}
@@ -340,25 +378,31 @@ function CameraPage() {
         <img ref={luckeyRef} src={luckeyFilter} alt="luckey Filter" style={{ display: "none" }} />
         <img ref={historyRef} src={HistoryFilter} alt="history Filter" style={{ display: "none" }} />
         <img ref={sinnandaRef} src={SinnandaFilter} alt="sinanada Filter" style={{ display: "none" }} />
+        <img ref={ganadiRef} src={GanadiFilter} alt="ganadi Filter" style={{ display: "none" }} />
 
         {/* 필터 선택 버튼 */}
-        <div className="filter-buttons">
-          <button onClick={() => setSelectedFilter("heart")} ref={heartButtonRef}>
-            <img src={HeartFilter} />
-          </button>
-          <button onClick={() => setSelectedFilter("glasses")} ref={glassesButtonRef}>
-            <img src={GlassesFilter} />
-          </button>
-          <button onClick={() => setSelectedFilter("luckey")} ref={luckeyButtonRef}>
-            <img src={luckeyFilter} />
-          </button>
-          <button onClick={() => setSelectedFilter("history")} ref={historyButtonRef}>
-            <img src={HistoryFilter} />
-          </button>
-          <button onClick={() => setSelectedFilter("sinnanda")} ref={sinnandaButtonRef}>
-            <img src={SinnandaFilter} />
-          </button>
-        </div>
+        {/* <div className="filter-buttons">
+          <div className="left">
+            <button onClick={() => setSelectedFilter("heart")} ref={heartButtonRef}>
+              <img src={HeartFilter} />
+            </button>
+            <button onClick={() => setSelectedFilter("glasses")} ref={glassesButtonRef}>
+              <img src={GlassesFilter} />
+            </button>
+          </div>
+
+          <div className="right">
+            <button onClick={() => setSelectedFilter("luckey")} ref={luckeyButtonRef}>
+              <img src={luckeyFilter} />
+            </button>
+            <button onClick={() => setSelectedFilter("history")} ref={historyButtonRef}>
+              <img src={HistoryFilter} />
+            </button>
+            <button onClick={() => setSelectedFilter("sinnanda")} ref={sinnandaButtonRef}>
+              <img src={SinnandaFilter} />
+            </button>
+          </div>
+        </div> */}
       </div>
 
       <div className="saved-images-slide">
