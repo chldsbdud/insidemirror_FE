@@ -125,21 +125,21 @@ const pageZones = {
   archive: {
     home: {
       x: 605,
-      y: 618,
+      y: 633.3333,
       width: 70,
       height: 73.33,
       path: "/home",
     },
     camera: {
       x: 749,
-      y: 618,
+      y: 633.3333,
       width: 70,
       height: 73.33,
       path: "/camera",
     },
     archive: {
       x: 461,
-      y: 618,
+      y: 633.3333,
       width: 70,
       height: 73.33,
       path: "/archive",
