@@ -37,26 +37,32 @@ function Schedule({ name }) {
   }, []);
 
   const fetchForDate = (date) => {
-    const iso = date.toISOString().split("T")[0]; // ISO 형식으로 변환
-    const encodedDate = encodeURIComponent(iso); // 날짜를 URL-safe로 인코딩
-    const url = `${API_BASE}/api/user/schedules?name=${encodeURIComponent(name)}&date=${encodedDate}`; // date 파라미터 인코딩
+    const getKSTDateString = (date) => {
+      const kst = new Date(date.getTime() + 9 * 60 * 60 * 1000); // KST 보정
+      const year = kst.getFullYear();
+      const month = String(kst.getMonth() + 1).padStart(2, "0");
+      const day = String(kst.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
 
-    console.log("요청 URL:", url); // 요청 URL 확인
+    const iso = getKSTDateString(date);
+    const encodedDate = encodeURIComponent(iso);
+    const url = `${API_BASE}/api/user/schedules?name=${encodeURIComponent(name)}&date=${encodedDate}`;
+
+    console.log("요청 URL:", url);
 
     return fetch(url)
       .then((res) => {
         if (!res.ok) {
           console.log(`Error fetching data for date: ${iso}, response: ${res.statusText}`);
-          return []; // 응답이 없으면 빈 배열 반환
+          return [];
         }
         return res.json();
       })
-      .then((data) => {
-        return data.map((item) => item.title); // 일정 제목만 추출
-      })
+      .then((data) => data.map((item) => item.title))
       .catch((err) => {
         console.error(`${iso} 일정 불러오기 실패:`, err);
-        return []; // 오류가 나면 빈 배열 반환
+        return [];
       });
   };
 
