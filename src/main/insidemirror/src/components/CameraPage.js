@@ -1,12 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import axios from "axios";
 import "../styles/CameraPage.css";
 import * as faceMesh from "@mediapipe/face_mesh";
 import { Camera } from "@mediapipe/camera_utils";
 import HeartFilter from "../img/heartFilter.png";
 import GlassesFilter from "../img/glassMando.png";
-import FeelGoodFilter from "../img/feelGood.jpg";
 import luckeyFilter from "../img/luckey.png";
 import HistoryFilter from "../img/history.png";
 import SinnandaFilter from "../img/sinnanda.png";
@@ -95,7 +93,13 @@ function CameraPage() {
       canvasElement.width = video.videoWidth;
       canvasElement.height = video.videoHeight;
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+
+      /*카메라 좌우 반전*/
+      canvasCtx.save(); // 상태 저장
+      canvasCtx.translate(canvasElement.width, 0);
+      canvasCtx.scale(-1, 1); // 좌우 반전 적용
       canvasCtx.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+      canvasCtx.restore(); // 상태 복구 (필수)
 
       const landmarks = results.multiFaceLandmarks[0];
       const forehead = landmarks[10];
@@ -105,9 +109,14 @@ function CameraPage() {
       if (selectedFilter === "heart" && heartRef.current?.complete) {
         const imageWidth = 200;
         const imageHeight = 120;
+        // 좌우 반전 적용
+        canvasCtx.save(); // 상태 저장
+        canvasCtx.translate(canvasElement.width, 0);
+        canvasCtx.scale(-1, 1); // 좌우 반전 적용
         const x = forehead.x * canvasElement.width - imageWidth / 2;
         const y = forehead.y * canvasElement.height - imageHeight * 1.5;
         canvasCtx.drawImage(heartRef.current, x, y, imageWidth, imageHeight);
+        canvasCtx.restore(); // 상태 복구
       }
 
       //안경 만두
@@ -119,28 +128,31 @@ function CameraPage() {
         const y = jaw.y * canvasElement.height - imageHeight / 2 + canvasElement.height * 0.12;
         canvasCtx.drawImage(glassesRef.current, x, y, imageWidth, imageHeight);
       }
+
       //럭키한 하루
       if (selectedFilter === "luckey" && luckeyRef.current?.complete) {
         const imageWidth = 200;
-        const imageHeight = 120;
-        const x = forehead.x * canvasElement.width - imageWidth / 2;
-        const y = forehead.y * canvasElement.height - imageHeight * 1.5;
+        const imageHeight = 150;
+        const x = (canvasElement.width - imageWidth) / 2; // 화면 중앙에 위치시킴
+        const y = canvasElement.height - imageHeight - 10; // 화면 아래쪽에 고정 (20px 위로)
         canvasCtx.drawImage(luckeyRef.current, x, y, imageWidth, imageHeight);
       }
+
       //추억쌓기
       if (selectedFilter === "history" && luckeyRef.current?.complete) {
         const imageWidth = 200;
         const imageHeight = 120;
-        const x = forehead.x * canvasElement.width - imageWidth / 2;
-        const y = forehead.y * canvasElement.height - imageHeight * 1.5;
+        const x = (canvasElement.width - imageWidth) / 6;
+        const y = canvasElement.height - imageHeight - 20;
         canvasCtx.drawImage(historyRef.current, x, y, imageWidth, imageHeight);
       }
+
       //신난다
       if (selectedFilter === "sinnanda" && luckeyRef.current?.complete) {
-        const imageWidth = 200;
+        const imageWidth = 300;
         const imageHeight = 120;
-        const x = forehead.x * canvasElement.width - imageWidth / 2;
-        const y = forehead.y * canvasElement.height - imageHeight * 1.5;
+        const x = (canvasElement.width - imageWidth) / 2;
+        const y = canvasElement.height - imageHeight - 20;
         canvasCtx.drawImage(sinnandaRef.current, x, y, imageWidth, imageHeight);
       }
     });
@@ -310,7 +322,7 @@ function CameraPage() {
         </div>
 
         <div className="camera-container">
-          <video ref={videoRef} style={{ display: "none" }} />
+          <video ref={videoRef} style={{ display: "none", transform: "scaleX(1)" }} />
           <canvas ref={canvasRef} className="face-canvas" />
 
           {countdown !== null && <div className="countdown-overlay">{countdown}</div>}

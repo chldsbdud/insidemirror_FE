@@ -214,3 +214,18 @@
     margin: 0 30px;
   }
 }
+
+@media (max-width: 768px) {
+  .main-archive {
+    flex-direction: column;
+  }
+
+  .right-panel {
+    padding-left: 0;
+    margin-top: 20px;
+  }
+
+  .left-panel {
+    max-height: none; /* 세로 스크롤 제거 */
+  }
+}

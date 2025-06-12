@@ -157,8 +157,6 @@ function Main() {
 
   return (
     <div className="app">
-      <MouseFollower />
-
       <div className="bottom-section">
         <div className="left-section">
           <div className="time-weather">
