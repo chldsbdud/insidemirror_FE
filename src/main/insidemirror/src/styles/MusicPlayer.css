@@ -2,7 +2,7 @@
 }
 
 .music-player-container {
-  width: 25vw;
+  /* width: 25vw; */
   border: 0.1vh solid rgba(255, 255, 255, 0.2);
   border-radius: 2vh;
   backdrop-filter: blur(4px);

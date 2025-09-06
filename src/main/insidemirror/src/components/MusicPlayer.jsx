@@ -1,50 +1,85 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoPause, IoPlay, IoPlaySkipBack, IoPlaySkipForward } from "react-icons/io5";
 import { useYoutube } from "../useYoutube.ts";
 import { PlayerState } from "../types.ts";
 import "../styles/MusicPlayer.css";
 import SoundWave from "../img/sound-wave.png";
 
-const playlists = ["PLVI3CAcQB7GM7pBqn8WYVkSKn2QfUbS2E"];
+// 재생목록 여러 개를 상수로 보관 (원하는 만큼 추가)
+const TRACKS = ["Yqscc_48tPY", "msGuqelopMA", "2o1zdX72400"];
 
-function MusicPlayer() {
-  const [randomId] = useState(() => {
-    const randomIndex = Math.floor(Math.random() * playlists.length);
-    return playlists[randomIndex];
-  });
+export default function MusicPlayer() {
+  // 여러 재생목록 중 하나 선택 (원하면 버튼으로 바꿔도 됨)
+  const [plIdx] = useState(0);
 
   const { playerDetails, actions } = useYoutube({
-    id: randomId,
+    id: TRACKS[0],
     type: "playlist",
+    playlist: TRACKS,
+    options: { autoplay: false, mute: false, loop: true },
+
+    events: {
+      onError: (e) => console.warn("YT onError:", e?.data),
+      onStateChange: (e) => console.log("YT state:", e?.data),
+      onReady: () => console.log("YT ready"),
+    },
   });
 
-  // 버튼 refs
+  // YouTube가 body에 만드는 컨테이너를 화면 밖으로 숨김(오디오만)
+  useEffect(() => {
+    const style = document.createElement("style");
+    style.setAttribute("data-hide-yt", "true");
+    style.textContent = `
+      div[id^="youtube-player-"] {
+        position: absolute !important;
+        left: -9999px !important;
+        top: 0 !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => style.remove();
+  }, []);
+
+  // 버튼 refs (네가 찍던 로그 유지)
   const prevBtnRef = useRef(null);
   const playPauseBtnRef = useRef(null);
   const nextBtnRef = useRef(null);
 
-  // 좌표 출력
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const logRect = (label, ref) => {
+    const t = setTimeout(() => {
+      const log = (label, ref) => {
         if (ref.current) {
-          const rect = ref.current.getBoundingClientRect();
-          console.log(`${label} 버튼 좌표:`, {
-            x: rect.left,
-            y: rect.top,
-            width: rect.width,
-            height: rect.height,
-          });
+          const r = ref.current.getBoundingClientRect();
+          console.log(`${label} 버튼 좌표:`, { x: r.left, y: r.top, width: r.width, height: r.height });
         }
       };
-
-      logRect("이전", prevBtnRef);
-      logRect("재생/일시정지", playPauseBtnRef);
-      logRect("다음", nextBtnRef);
-    }, 300); // 렌더 이후 300ms 지연
-
-    return () => clearTimeout(timer);
+      log("이전", prevBtnRef);
+      log("재생/일시정지", playPauseBtnRef);
+      log("다음", nextBtnRef);
+    }, 300);
+    return () => clearTimeout(t);
   }, [playerDetails.state]);
+
+  // ▶ 재생/일시정지
+  const handlePlayPause = () => {
+    // 초기엔 playerDetails.id가 비어 있을 수 있으니 가드
+    if (!playerDetails?.id && playerDetails.state === PlayerState.UNSTARTED) return;
+    actions.unMute?.();
+    actions.setVolume?.(100);
+
+    if (playerDetails.state === PlayerState.PLAYING) actions.pauseVideo();
+    else actions.playVideo();
+  };
+
+  // ▶ 이전/다음 (플레이리스트 트랙 이동)
+  const handlePrev = () => actions.previousVideo();
+  const handleNext = () => actions.nextVideo();
+
+  // 버튼 비활성 조건(최초 로드 전에는 동작 안 하도록)
+  const disabled = !playerDetails?.id && playerDetails.state === PlayerState.UNSTARTED;
 
   return (
     <div className="player-container">
@@ -55,20 +90,21 @@ function MusicPlayer() {
         </div>
 
         <div className="music-info">
-          <div className="music-title">{playerDetails.title}</div>
-          <div className="music-author">{playerDetails.author}</div>
+          <div className="music-title">{playerDetails.title || "—"}</div>
+          {/* types.ts에는 author가 없으니 표시는 생략 */}
+          {/* <div className="music-author">{playerDetails.author || ""}</div> */}
         </div>
 
         <div className="music-controls">
-          <button ref={prevBtnRef} onClick={actions.previousVideo}>
+          <button ref={prevBtnRef} onClick={handlePrev} disabled={disabled}>
             <IoPlaySkipBack />
           </button>
 
-          <button ref={playPauseBtnRef} onClick={playerDetails.state === PlayerState.PLAYING ? actions.pauseVideo : actions.playVideo}>
+          <button ref={playPauseBtnRef} onClick={handlePlayPause} disabled={disabled}>
             {playerDetails.state === PlayerState.PLAYING ? <IoPause /> : <IoPlay />}
           </button>
 
-          <button ref={nextBtnRef} onClick={actions.nextVideo}>
+          <button ref={nextBtnRef} onClick={handleNext} disabled={disabled}>
             <IoPlaySkipForward />
           </button>
         </div>
@@ -76,5 +112,3 @@ function MusicPlayer() {
     </div>
   );
 }
-
-export default MusicPlayer;
